@@ -1,14 +1,17 @@
 package kr.eddi.demo.account.controller.form;
 
 import kr.eddi.demo.account.service.request.AccountRegisterRequest;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
-@RequiredArgsConstructor
+@Getter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class AccountRegisterRequestFrom {
 
-    final private String email;
+    private String email;
 
-    final private String password;
+    private String password;
 
     public AccountRegisterRequest toAccountRegisterRequest () {
         return new AccountRegisterRequest(email, password);
