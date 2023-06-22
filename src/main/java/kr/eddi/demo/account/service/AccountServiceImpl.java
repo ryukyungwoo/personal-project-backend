@@ -3,6 +3,7 @@ package kr.eddi.demo.account.service;
 import kr.eddi.demo.account.controller.form.AccountLoginRequestForm;
 import kr.eddi.demo.account.entity.Account;
 import kr.eddi.demo.account.repository.AccountRepository;
+import kr.eddi.demo.account.service.request.AccountLogOutRequest;
 import kr.eddi.demo.account.service.request.AccountLoginRequest;
 import kr.eddi.demo.account.service.request.AccountRegisterRequest;
 import kr.eddi.demo.redis.RedisService;
@@ -29,7 +30,7 @@ public class AccountServiceImpl implements AccountService{
     }
 
     @Override
-    public String login(AccountLoginRequest request) {
+    public String signIn(AccountLoginRequest request) {
         Optional<Account> maybeAccount = accountRepository.findByEmail(request.getEmail());
         log.info(String.valueOf(maybeAccount));
         if(maybeAccount.isEmpty()){
@@ -43,4 +44,11 @@ public class AccountServiceImpl implements AccountService{
         redisService.setKeyAndValue(request.getUserToken(), account.getId());
         return request.getUserToken();
         }
+
+    @Override
+    public void signOut(AccountLogOutRequest request) {
+
+        redisService.deleteByKey(request.getUserToken());
+
+    }
 }
