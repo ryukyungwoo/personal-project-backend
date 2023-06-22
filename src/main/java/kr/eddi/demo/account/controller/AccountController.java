@@ -1,5 +1,6 @@
 package kr.eddi.demo.account.controller;
 
+import kr.eddi.demo.account.controller.form.AccountLogOutRequestForm;
 import kr.eddi.demo.account.controller.form.AccountLoginRequestForm;
 import kr.eddi.demo.account.controller.form.AccountRegisterRequestFrom;
 import kr.eddi.demo.account.service.AccountService;
@@ -23,8 +24,14 @@ public class AccountController {
     }
 
     @PostMapping("/sign-in")
-    public String accountLogin (@RequestBody AccountLoginRequestForm requestForm) {
-        String userToken = accountService.login(requestForm.toAccountRequest());
+    public String accountSignIn (@RequestBody AccountLoginRequestForm requestForm) {
+        String userToken = accountService.signIn(requestForm.toAccountRequest());
+        log.info("userToken" + userToken);
         return userToken;
+    }
+    @PostMapping("/sign-out")
+    public void accountSignOut (@RequestBody AccountLogOutRequestForm requestForm) {
+        log.info("로그아웃" + requestForm);
+        accountService.signOut(requestForm.toAccountLogOutRequest());
     }
 }

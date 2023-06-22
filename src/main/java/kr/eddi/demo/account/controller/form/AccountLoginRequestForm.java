@@ -14,8 +14,7 @@ public class AccountLoginRequestForm {
     private String password;
 
     public AccountLoginRequest toAccountRequest () {
-        UUID randomPrefix = UUID.randomUUID();
-        String userToken = randomPrefix + email;
+        String userToken = UUID.randomUUID().toString();
 
         return new AccountLoginRequest(email, password, userToken);
     }
