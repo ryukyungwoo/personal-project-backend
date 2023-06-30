@@ -1,5 +1,6 @@
 package kr.eddi.demo.domain.board.controller;
 
+import kr.eddi.demo.domain.board.controller.form.BoardModifyRequestForm;
 import kr.eddi.demo.domain.board.controller.form.BoardRegisterRequestForm;
 import kr.eddi.demo.domain.board.entity.Board;
 import kr.eddi.demo.domain.board.service.BoardService;
@@ -39,5 +40,13 @@ public class BoardController {
         log.info("boardRead()");
 
         return boardService.read(id);
+    }
+
+    @PutMapping("/{id}")
+    public Board modifyBoard (@PathVariable("id") Long id,
+                              @RequestBody BoardModifyRequestForm requestForm) {
+        log.info("boardModify()");
+
+        return boardService.modify(id, requestForm);
     }
 }

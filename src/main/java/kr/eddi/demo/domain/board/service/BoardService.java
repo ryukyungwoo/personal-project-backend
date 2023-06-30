@@ -1,5 +1,6 @@
 package kr.eddi.demo.domain.board.service;
 
+import kr.eddi.demo.domain.board.controller.form.BoardModifyRequestForm;
 import kr.eddi.demo.domain.board.controller.form.BoardRegisterRequestForm;
 import kr.eddi.demo.domain.board.entity.Board;
 
@@ -11,4 +12,6 @@ public interface BoardService {
     Board register(BoardRegisterRequestForm requestForm);
 
     Board read(Long id);
+
+    Board modify(Long id, BoardModifyRequestForm requestForm);
 }

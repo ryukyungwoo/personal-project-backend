@@ -1,5 +1,6 @@
 package kr.eddi.demo.domain.board.service;
 
+import kr.eddi.demo.domain.board.controller.form.BoardModifyRequestForm;
 import kr.eddi.demo.domain.board.controller.form.BoardRegisterRequestForm;
 import kr.eddi.demo.domain.board.entity.Board;
 import kr.eddi.demo.domain.board.repository.BoardRepository;
@@ -37,5 +38,20 @@ public class BoardServiceImpl implements BoardService{
         }
 
         return maybeBoard.get();
+    }
+
+    @Override
+    public Board modify(Long id, BoardModifyRequestForm requestForm) {
+        Optional<Board> maybeBoard = boardRepository.findById(id);
+
+        if (maybeBoard.isEmpty()) {
+            log.info("게시글이 없습니다");
+            return null;
+        }
+        Board board = maybeBoard.get();
+        board.setTitle(requestForm.toBoardModifyRequest().getTitle());
+        board.setContent(requestForm.toBoardModifyRequest().getContent());
+
+        return boardRepository.save(board);
     }
 }
