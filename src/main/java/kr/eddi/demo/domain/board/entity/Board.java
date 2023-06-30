@@ -24,4 +24,10 @@ public class Board {
     private String writer;
     @Setter
     private String content;
+
+    public Board(String title, String writer, String content) {
+        this.title = title;
+        this.writer = writer;
+        this.content = content;
+    }
 }

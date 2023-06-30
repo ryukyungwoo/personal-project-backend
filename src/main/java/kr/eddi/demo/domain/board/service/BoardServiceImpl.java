@@ -1,5 +1,6 @@
 package kr.eddi.demo.domain.board.service;
 
+import kr.eddi.demo.domain.board.controller.form.BoardRegisterRequestForm;
 import kr.eddi.demo.domain.board.entity.Board;
 import kr.eddi.demo.domain.board.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,5 +19,10 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public List<Board> list() {
         return boardRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+    }
+
+    @Override
+    public Board register(BoardRegisterRequestForm requestForm) {
+        return boardRepository.save(requestForm.toBoardRegisterRequest().toBoard());
     }
 }
