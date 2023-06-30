@@ -1,4 +1,4 @@
-package kr.eddi.demo.account.service.request;
+package kr.eddi.demo.domain.account.service.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

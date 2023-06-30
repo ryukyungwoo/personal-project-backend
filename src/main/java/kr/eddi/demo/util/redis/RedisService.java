@@ -1,4 +1,4 @@
-package kr.eddi.demo.redis;
+package kr.eddi.demo.util.redis;
 
 public interface RedisService {
     void setKeyAndValue(String token, Long accountId);

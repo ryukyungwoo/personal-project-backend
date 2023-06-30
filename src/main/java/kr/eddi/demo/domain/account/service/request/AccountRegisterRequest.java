@@ -1,6 +1,6 @@
-package kr.eddi.demo.account.service.request;
+package kr.eddi.demo.domain.account.service.request;
 
-import kr.eddi.demo.account.entity.Account;
+import kr.eddi.demo.domain.account.entity.Account;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

@@ -1,6 +1,6 @@
-package kr.eddi.demo.account.controller.form;
+package kr.eddi.demo.domain.account.controller.form;
 
-import kr.eddi.demo.account.service.request.AccountLoginRequest;
+import kr.eddi.demo.domain.account.service.request.AccountLoginRequest;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

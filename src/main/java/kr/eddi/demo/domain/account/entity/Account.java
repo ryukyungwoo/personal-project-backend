@@ -1,4 +1,4 @@
-package kr.eddi.demo.account.entity;
+package kr.eddi.demo.domain.account.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

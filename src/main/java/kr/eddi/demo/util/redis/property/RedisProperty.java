@@ -1,4 +1,4 @@
-package kr.eddi.demo.util;
+package kr.eddi.demo.util.redis.property;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;

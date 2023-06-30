@@ -1,12 +1,11 @@
-package kr.eddi.demo.account.service;
+package kr.eddi.demo.domain.account.service;
 
-import kr.eddi.demo.account.controller.form.AccountLoginRequestForm;
-import kr.eddi.demo.account.entity.Account;
-import kr.eddi.demo.account.repository.AccountRepository;
-import kr.eddi.demo.account.service.request.AccountLogOutRequest;
-import kr.eddi.demo.account.service.request.AccountLoginRequest;
-import kr.eddi.demo.account.service.request.AccountRegisterRequest;
-import kr.eddi.demo.redis.RedisService;
+import kr.eddi.demo.domain.account.entity.Account;
+import kr.eddi.demo.domain.account.repository.AccountRepository;
+import kr.eddi.demo.domain.account.service.request.AccountLogOutRequest;
+import kr.eddi.demo.domain.account.service.request.AccountLoginRequest;
+import kr.eddi.demo.domain.account.service.request.AccountRegisterRequest;
+import kr.eddi.demo.util.redis.RedisService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

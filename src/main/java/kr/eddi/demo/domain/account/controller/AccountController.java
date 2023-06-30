@@ -1,10 +1,9 @@
-package kr.eddi.demo.account.controller;
+package kr.eddi.demo.domain.account.controller;
 
-import kr.eddi.demo.account.controller.form.AccountLogOutRequestForm;
-import kr.eddi.demo.account.controller.form.AccountLoginRequestForm;
-import kr.eddi.demo.account.controller.form.AccountRegisterRequestFrom;
-import kr.eddi.demo.account.service.AccountService;
-import kr.eddi.demo.account.service.request.AccountLoginRequest;
+import kr.eddi.demo.domain.account.controller.form.AccountLogOutRequestForm;
+import kr.eddi.demo.domain.account.controller.form.AccountLoginRequestForm;
+import kr.eddi.demo.domain.account.controller.form.AccountRegisterRequestFrom;
+import kr.eddi.demo.domain.account.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
