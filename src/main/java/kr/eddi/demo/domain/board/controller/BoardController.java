@@ -49,4 +49,11 @@ public class BoardController {
 
         return boardService.modify(id, requestForm);
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteBoard (@PathVariable("id") Long id) {
+        log.info("boardDelete()");
+
+        boardService.delete(id);
+    }
 }
