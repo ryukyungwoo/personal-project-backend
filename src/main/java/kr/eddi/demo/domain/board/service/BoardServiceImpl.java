@@ -9,6 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -24,5 +25,17 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public Board register(BoardRegisterRequestForm requestForm) {
         return boardRepository.save(requestForm.toBoardRegisterRequest().toBoard());
+    }
+
+    @Override
+    public Board read(Long id) {
+        Optional<Board> maybeBoard = boardRepository.findById(id);
+
+        if (maybeBoard.isEmpty()) {
+            log.info("게시글이 없습니다");
+            return null;
+        }
+
+        return maybeBoard.get();
     }
 }

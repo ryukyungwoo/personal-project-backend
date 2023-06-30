@@ -9,4 +9,6 @@ public interface BoardService {
     List<Board> list();
 
     Board register(BoardRegisterRequestForm requestForm);
+
+    Board read(Long id);
 }

@@ -33,4 +33,11 @@ public class BoardController {
 
         return boardService.register(requestForm);
     }
+
+    @GetMapping("/{id}")
+    public Board readBoard (@PathVariable("id") Long id) {
+        log.info("boardRead()");
+
+        return boardService.read(id);
+    }
 }
