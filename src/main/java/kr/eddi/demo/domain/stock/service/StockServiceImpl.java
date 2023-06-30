@@ -6,6 +6,7 @@ import kr.eddi.demo.domain.stock.repository.StockRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -46,5 +47,10 @@ public class StockServiceImpl implements StockService{
         }
 
         stockRepository.saveAll(stockList);
+    }
+
+    @Override
+    public List<Stock> list() {
+        return stockRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
     }
 }

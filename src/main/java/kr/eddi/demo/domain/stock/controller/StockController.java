@@ -1,10 +1,14 @@
 package kr.eddi.demo.domain.stock.controller;
 
+import kr.eddi.demo.domain.board.entity.Board;
 import kr.eddi.demo.domain.stock.controller.form.StockDataSaveRequestForm;
+import kr.eddi.demo.domain.stock.entity.Stock;
 import kr.eddi.demo.domain.stock.service.StockService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -20,4 +24,14 @@ public class StockController {
 
         stockService.save(requestSaveUrl);
     }
+    @GetMapping("/list")
+    public List<Stock> stockList () {
+        log.info("boardList()");
+
+        List<Stock> returnedBoardList = stockService.list();
+        log.info("returnedBoardList: " + returnedBoardList);
+
+        return returnedBoardList;
+    }
+
 }
