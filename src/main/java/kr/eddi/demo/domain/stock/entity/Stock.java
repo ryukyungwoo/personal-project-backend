@@ -1,9 +1,7 @@
 package kr.eddi.demo.domain.stock.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import kr.eddi.demo.domain.board.entity.StockBoardList;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,6 +18,9 @@ public class Stock {
     @Getter
     @Setter
     private String stockName;
+
+    @OneToOne(mappedBy = "stock", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private StockBoardList stockBoardList;
 
     public Stock(String ticker, String stockName) {
         this.ticker = ticker;

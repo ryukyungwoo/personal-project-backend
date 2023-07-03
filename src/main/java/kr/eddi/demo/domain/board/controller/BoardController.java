@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -18,42 +17,29 @@ import java.util.UUID;
 public class BoardController {
     final private BoardService boardService;
 
-    @GetMapping("/list")
-    public List<Board> boardList () {
-        log.info("boardList()");
+//    @GetMapping("/list")
+//    public List<Board> boardList () {
+//        log.info("boardList()");
+//
+//        List<Board> returnedBoardList = boardService.list();
+//        log.info("returnedBoardList: " + returnedBoardList);
+//
+//        return returnedBoardList;
+//    }
+    @GetMapping("/list/{ticker}")
+    public List<Board> requestBoards (@PathVariable("ticker") String ticker) {
 
-        List<Board> returnedBoardList = boardService.list();
-        log.info("returnedBoardList: " + returnedBoardList);
+        List<Board> boardList = boardService.list(ticker);
+        log.info("requestBoards: " + boardList);
 
-        return returnedBoardList;
+        return boardList;
     }
 
-    @PostMapping("/register")
-    public Board registerBoard (@RequestBody BoardRegisterRequestForm requestForm) {
+    @PostMapping("/register/{ticker}")
+    public Board registerBoard (@RequestBody BoardRegisterRequestForm requestForm,
+                                @PathVariable("ticker") String ticker) {
         log.info("registerBoard()");
 
-        return boardService.register(requestForm);
-    }
-
-    @GetMapping("/{id}")
-    public Board readBoard (@PathVariable("id") Long id) {
-        log.info("boardRead()");
-
-        return boardService.read(id);
-    }
-
-    @PutMapping("/{id}")
-    public Board modifyBoard (@PathVariable("id") Long id,
-                              @RequestBody BoardModifyRequestForm requestForm) {
-        log.info("boardModify()");
-
-        return boardService.modify(id, requestForm);
-    }
-
-    @DeleteMapping("/{id}")
-    public void deleteBoard (@PathVariable("id") Long id) {
-        log.info("boardDelete()");
-
-        boardService.delete(id);
+        return boardService.register(requestForm, ticker);
     }
 }

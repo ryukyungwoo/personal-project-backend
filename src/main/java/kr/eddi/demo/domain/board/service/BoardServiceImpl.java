@@ -3,10 +3,12 @@ package kr.eddi.demo.domain.board.service;
 import kr.eddi.demo.domain.board.controller.form.BoardModifyRequestForm;
 import kr.eddi.demo.domain.board.controller.form.BoardRegisterRequestForm;
 import kr.eddi.demo.domain.board.entity.Board;
+import kr.eddi.demo.domain.board.entity.StockBoardList;
 import kr.eddi.demo.domain.board.repository.BoardRepository;
+import kr.eddi.demo.domain.board.repository.StockBoardListRepository;
+import kr.eddi.demo.domain.stock.entity.Stock;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,52 +20,28 @@ import java.util.Optional;
 public class BoardServiceImpl implements BoardService{
 
     final private BoardRepository boardRepository;
-    @Override
-    public List<Board> list() {
-        return boardRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
-    }
+    final private StockBoardListRepository stockBoardListRepository;
 
     @Override
-    public Board register(BoardRegisterRequestForm requestForm) {
-        return boardRepository.save(requestForm.toBoardRegisterRequest().toBoard());
-    }
+    public List<Board> list(String ticker) {
 
-    @Override
-    public Board read(Long id) {
-        Optional<Board> maybeBoard = boardRepository.findById(id);
+        Optional<StockBoardList> maybeStockBoardList = stockBoardListRepository.findByStockTicker(ticker);
 
-        if (maybeBoard.isEmpty()) {
-            log.info("게시글이 없습니다");
-            return null;
+        if (maybeStockBoardList.isEmpty()) {
+            log.info("게시판이 없습니다");
         }
+        List<Board> boardList = maybeStockBoardList.get().getBoardList();
 
-        return maybeBoard.get();
+        return boardList;
     }
 
     @Override
-    public Board modify(Long id, BoardModifyRequestForm requestForm) {
-        Optional<Board> maybeBoard = boardRepository.findById(id);
+    public Board register(BoardRegisterRequestForm requestForm, String ticker) {
 
-        if (maybeBoard.isEmpty()) {
-            log.info("게시글이 없습니다");
-            return null;
-        }
-        Board board = maybeBoard.get();
-        board.setTitle(requestForm.toBoardModifyRequest().getTitle());
-        board.setContent(requestForm.toBoardModifyRequest().getContent());
+        Board board = boardRepository.save(requestForm.toBoardRegisterRequest().toBoard());
 
-        return boardRepository.save(board);
-    }
+        stockBoardListRepository.findByStockTicker(ticker).get().getBoardList().add(board);
 
-    @Override
-    public void delete(Long id) {
-        Optional<Board> maybeBoard = boardRepository.findById(id);
-
-        if (maybeBoard.isEmpty()) {
-            log.info("게시글이 없습니다");
-        }
-        Board board = maybeBoard.get();
-
-        boardRepository.delete(board);
+        return null;
     }
 }

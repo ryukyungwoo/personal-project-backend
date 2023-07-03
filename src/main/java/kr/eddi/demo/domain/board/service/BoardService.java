@@ -7,13 +7,8 @@ import kr.eddi.demo.domain.board.entity.Board;
 import java.util.List;
 
 public interface BoardService {
-    List<Board> list();
 
-    Board register(BoardRegisterRequestForm requestForm);
+    List<Board> list(String ticker);
 
-    Board read(Long id);
-
-    Board modify(Long id, BoardModifyRequestForm requestForm);
-
-    void delete(Long id);
+    Board register(BoardRegisterRequestForm requestForm, String ticker);
 }
