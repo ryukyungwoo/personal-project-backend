@@ -48,4 +48,9 @@ public class BoardController {
 
         boardService.modify(requestForm, ticker, id);
     }
+    @DeleteMapping("/delete/{ticker}/{id}")
+    public void deleteBoard (@PathVariable("ticker") String ticker,
+                             @PathVariable("id") Long id) {
+        boardService.delete(ticker, id);
+    }
 }

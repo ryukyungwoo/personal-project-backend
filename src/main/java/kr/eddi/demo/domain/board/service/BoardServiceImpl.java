@@ -75,4 +75,18 @@ public class BoardServiceImpl implements BoardService{
             }
         }
     }
+
+    @Override
+    public void delete(String ticker, Long id) {
+        Optional<StockBoardList> maybeStockBoardList = stockBoardListRepository.findByStockTicker(ticker);
+
+        if (maybeStockBoardList.isPresent()) {
+            List<Board> boardList = maybeStockBoardList.get().getBoardList();
+            for (Board board : boardList) {
+                if (board.getId().equals(id)) {
+                    boardRepository.delete(board);
+                }
+            }
+        }
+    }
 }

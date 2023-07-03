@@ -15,4 +15,6 @@ public interface BoardService {
     Board read(String ticker, Long id);
 
     void modify(BoardRegisterRequestForm requestForm, String ticker, Long id);
+
+    void delete(String ticker, Long id);
 }
