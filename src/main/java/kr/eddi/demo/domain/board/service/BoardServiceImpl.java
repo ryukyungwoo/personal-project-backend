@@ -44,4 +44,35 @@ public class BoardServiceImpl implements BoardService{
 
         return null;
     }
+
+    @Override
+    public Board read(String ticker, Long id) {
+        Optional<StockBoardList> maybeStockBoardList = stockBoardListRepository.findByStockTicker(ticker);
+
+        if (maybeStockBoardList.isPresent()) {
+            List<Board> boardList = maybeStockBoardList.get().getBoardList();
+            for (Board board : boardList) {
+                if (board.getId().equals(id)) {
+                    return board;
+                }
+            }
+        }return null;
+    }
+
+    @Override
+    public void modify(BoardRegisterRequestForm requestForm, String ticker, Long id) {
+
+        Optional<StockBoardList> maybeStockBoardList = stockBoardListRepository.findByStockTicker(ticker);
+
+        if (maybeStockBoardList.isPresent()) {
+            List<Board> boardList = maybeStockBoardList.get().getBoardList();
+            for (Board board : boardList) {
+                if (board.getId().equals(id)) {
+
+                    board.setTitle(requestForm.getTitle());
+                    board.setContent(requestForm.getContent());
+                }
+            }
+        }
+    }
 }

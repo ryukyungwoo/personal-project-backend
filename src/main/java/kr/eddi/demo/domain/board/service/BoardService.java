@@ -11,4 +11,8 @@ public interface BoardService {
     List<Board> list(String ticker);
 
     Board register(BoardRegisterRequestForm requestForm, String ticker);
+
+    Board read(String ticker, Long id);
+
+    void modify(BoardRegisterRequestForm requestForm, String ticker, Long id);
 }

@@ -20,7 +20,7 @@ public class StockBoardList {
     final private Stock stock;
 
     @Getter
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     final private List<Board> boardList = new ArrayList<>();
 }
