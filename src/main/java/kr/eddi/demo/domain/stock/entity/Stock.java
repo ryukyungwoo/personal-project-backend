@@ -8,15 +8,12 @@ import lombok.Setter;
 @Entity
 public class Stock {
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long id;
-
     @Id
     @Getter
     @Setter
     @Column(unique=true)
     private String ticker;
+
     @Getter
     @Setter
     private String stockName;

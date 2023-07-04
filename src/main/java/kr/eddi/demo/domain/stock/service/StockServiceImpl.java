@@ -51,6 +51,6 @@ public class StockServiceImpl implements StockService{
 
     @Override
     public List<Stock> list() {
-        return stockRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+        return stockRepository.findAll(Sort.by(Sort.Direction.DESC, "ticker"));
     }
 }
