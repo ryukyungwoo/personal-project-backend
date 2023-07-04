@@ -34,21 +34,21 @@ public class BoardController {
 
         return boardService.register(requestForm, ticker);
     }
-    @GetMapping("/read/{ticker}/{id}")
+    @GetMapping("/{ticker}/{id}")
     public Board readBoard (@PathVariable("ticker") String ticker,
                        @PathVariable("id") Long id) {
 
         Board board = boardService.read(ticker, id);
         return board;
     }
-    @PutMapping("/modify/{ticker}/{id}")
+    @PutMapping("/{ticker}/{id}")
     public void modifyBoard (@RequestBody BoardRegisterRequestForm requestForm,
                               @PathVariable("ticker") String ticker,
                               @PathVariable("id") Long id) {
 
         boardService.modify(requestForm, ticker, id);
     }
-    @DeleteMapping("/delete/{ticker}/{id}")
+    @DeleteMapping("/{ticker}/{id}")
     public void deleteBoard (@PathVariable("ticker") String ticker,
                              @PathVariable("id") Long id) {
         boardService.delete(ticker, id);
