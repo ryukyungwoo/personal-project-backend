@@ -2,25 +2,33 @@ package kr.eddi.demo.domain.board.entity;
 
 import jakarta.persistence.*;
 import kr.eddi.demo.domain.stock.entity.Stock;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class StockBoardList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    final private Long id;
+    private Long id;
     @Getter
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "stock_ticker")
-    final private Stock stock;
+    private Stock stock;
 
     @Getter
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_id")
-    final private List<Board> boardList = new ArrayList<>();
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "boardList_id")
+    private BoardList boardList;
+
+    public StockBoardList(Stock stock, BoardList boardList) {
+        this.stock = stock;
+        this.boardList = boardList;
+    }
 }

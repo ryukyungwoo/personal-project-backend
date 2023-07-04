@@ -20,6 +20,7 @@ public class BoardController {
 
     @GetMapping("/list/{ticker}")
     public List<Board> requestBoards (@PathVariable("ticker") String ticker) {
+        log.info("ticker" + ticker);
 
         List<Board> boardList = boardService.list(ticker);
         log.info("requestBoards: " + boardList);

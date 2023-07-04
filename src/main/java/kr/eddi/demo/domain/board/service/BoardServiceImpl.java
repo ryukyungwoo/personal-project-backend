@@ -3,14 +3,18 @@ package kr.eddi.demo.domain.board.service;
 import kr.eddi.demo.domain.board.controller.form.BoardModifyRequestForm;
 import kr.eddi.demo.domain.board.controller.form.BoardRegisterRequestForm;
 import kr.eddi.demo.domain.board.entity.Board;
+import kr.eddi.demo.domain.board.entity.BoardList;
 import kr.eddi.demo.domain.board.entity.StockBoardList;
+import kr.eddi.demo.domain.board.repository.BoardListRepository;
 import kr.eddi.demo.domain.board.repository.BoardRepository;
 import kr.eddi.demo.domain.board.repository.StockBoardListRepository;
 import kr.eddi.demo.domain.stock.entity.Stock;
+import kr.eddi.demo.domain.stock.repository.StockRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +24,8 @@ import java.util.Optional;
 public class BoardServiceImpl implements BoardService{
 
     final private BoardRepository boardRepository;
+    final private StockRepository stockRepository;
+    final private BoardListRepository boardListRepository;
     final private StockBoardListRepository stockBoardListRepository;
 
     @Override
@@ -28,21 +34,41 @@ public class BoardServiceImpl implements BoardService{
         Optional<StockBoardList> maybeStockBoardList = stockBoardListRepository.findByStockTicker(ticker);
 
         if (maybeStockBoardList.isEmpty()) {
-            log.info("게시판이 없습니다");
+            log.info("Have Any Boards");
+            return null;
         }
-        List<Board> boardList = maybeStockBoardList.get().getBoardList();
+        BoardList boardList = maybeStockBoardList.get().getBoardList();
 
-        return boardList;
+        List<Board> getBoardList = boardList.getBoards();
+
+        return getBoardList;
     }
 
     @Override
     public Board register(BoardRegisterRequestForm requestForm, String ticker) {
 
-        Board board = boardRepository.save(requestForm.toBoardRegisterRequest().toBoard());
+        Optional<StockBoardList> maybeStockBoardList = stockBoardListRepository.findByStockTicker(ticker);
 
-        stockBoardListRepository.findByStockTicker(ticker).get().getBoardList().add(board);
+        if (maybeStockBoardList.isPresent()) {
+        maybeStockBoardList.get().getBoardList().getBoards().add(requestForm.toBoardRegisterRequest().toBoard());
+        return requestForm.toBoardRegisterRequest().toBoard();
+        } else {
 
-        return null;
+        log.info("no exist boards");
+        Board board = requestForm.toBoardRegisterRequest().toBoard();
+        Stock stock = stockRepository.findByStockTicker(ticker).get();
+
+        boardRepository.save(board);
+
+        BoardList boardList = new BoardList();
+        board.setBoardList(boardList);
+        boardListRepository.save(boardList);
+
+        StockBoardList stockBoardList = new StockBoardList(stock, boardList);
+        stockBoardListRepository.save(stockBoardList);
+
+        return board;
+        }
     }
 
     @Override
@@ -50,7 +76,7 @@ public class BoardServiceImpl implements BoardService{
         Optional<StockBoardList> maybeStockBoardList = stockBoardListRepository.findByStockTicker(ticker);
 
         if (maybeStockBoardList.isPresent()) {
-            List<Board> boardList = maybeStockBoardList.get().getBoardList();
+            List<Board> boardList = maybeStockBoardList.get().getBoardList().getBoards();
             for (Board board : boardList) {
                 if (board.getId().equals(id)) {
                     return board;
@@ -65,7 +91,7 @@ public class BoardServiceImpl implements BoardService{
         Optional<StockBoardList> maybeStockBoardList = stockBoardListRepository.findByStockTicker(ticker);
 
         if (maybeStockBoardList.isPresent()) {
-            List<Board> boardList = maybeStockBoardList.get().getBoardList();
+            List<Board> boardList = maybeStockBoardList.get().getBoardList().getBoards();
             for (Board board : boardList) {
                 if (board.getId().equals(id)) {
 
@@ -81,7 +107,7 @@ public class BoardServiceImpl implements BoardService{
         Optional<StockBoardList> maybeStockBoardList = stockBoardListRepository.findByStockTicker(ticker);
 
         if (maybeStockBoardList.isPresent()) {
-            List<Board> boardList = maybeStockBoardList.get().getBoardList();
+            List<Board> boardList = maybeStockBoardList.get().getBoardList().getBoards();
             for (Board board : boardList) {
                 if (board.getId().equals(id)) {
                     boardRepository.delete(board);
