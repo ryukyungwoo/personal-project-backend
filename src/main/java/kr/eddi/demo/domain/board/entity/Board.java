@@ -35,4 +35,5 @@ public class Board {
         this.writer = writer;
         this.content = content;
     }
+
 }

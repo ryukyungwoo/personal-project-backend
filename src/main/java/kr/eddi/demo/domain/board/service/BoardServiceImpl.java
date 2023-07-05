@@ -1,6 +1,5 @@
 package kr.eddi.demo.domain.board.service;
 
-import kr.eddi.demo.domain.board.controller.form.BoardModifyRequestForm;
 import kr.eddi.demo.domain.board.controller.form.BoardRegisterRequestForm;
 import kr.eddi.demo.domain.board.entity.Board;
 import kr.eddi.demo.domain.board.entity.BoardList;
@@ -14,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,9 +37,9 @@ public class BoardServiceImpl implements BoardService{
         }
         BoardList boardList = maybeStockBoardList.get().getBoardList();
 
-        List<Board> getBoardList = boardList.getBoards();
+        List<Board> boards = boardList.getBoards();
 
-        return getBoardList;
+        return boards;
     }
 
     @Override
@@ -50,19 +48,25 @@ public class BoardServiceImpl implements BoardService{
         Optional<StockBoardList> maybeStockBoardList = stockBoardListRepository.findByStockTicker(ticker);
 
         if (maybeStockBoardList.isPresent()) {
-        maybeStockBoardList.get().getBoardList().getBoards().add(requestForm.toBoardRegisterRequest().toBoard());
-        return requestForm.toBoardRegisterRequest().toBoard();
-        } else {
+            Board board = requestForm.toBoardRegisterRequest().toBoard();
+            BoardList boardList = maybeStockBoardList.get().getBoardList();
+            boardList.getBoards().add(board);
+            boardRepository.save(board);
 
+        return board;
+
+        } else {
         log.info("no exist boards");
         Board board = requestForm.toBoardRegisterRequest().toBoard();
-        Stock stock = stockRepository.findByStockTicker(ticker).get();
 
-        boardRepository.save(board);
+        Stock stock = stockRepository.findByStockTicker(ticker).get();
 
         BoardList boardList = new BoardList();
         board.setBoardList(boardList);
+        boardList.getBoards().add(board);
+
         boardListRepository.save(boardList);
+        boardRepository.save(board);
 
         StockBoardList stockBoardList = new StockBoardList(stock, boardList);
         stockBoardListRepository.save(stockBoardList);
