@@ -51,6 +51,33 @@ public class StockServiceImpl implements StockService{
 
     @Override
     public List<Stock> list() {
+
         return stockRepository.findAll(Sort.by(Sort.Direction.DESC, "ticker"));
+    }
+
+    @Override
+    public List<Stock> getStockList(String requestSaveUrl) {
+        ResponseEntity<StockDataSaveRequestForm> response = restTemplate.getForEntity(requestSaveUrl, StockDataSaveRequestForm.class);
+
+        log.info("response" + response);
+
+        List<String> tickerList = response.getBody().getTicker();
+        List<String> nameList = response.getBody().getStockName();
+
+        if (tickerList.size() != nameList.size()) {
+            log.info("티커와 이름의 길이가 다릅니다");
+            throw new IllegalArgumentException("Ticker and name lists have different sizes.");
+        }
+
+        List<Stock> stockList = new ArrayList<>();
+
+        for (int i = 0; i < tickerList.size(); i++) {
+            Stock stock = new Stock();
+            stock.setTicker(tickerList.get(i));
+            stock.setStockName(nameList.get(i));
+            stockList.add(stock);
+        }
+
+        return stockList;
     }
 }

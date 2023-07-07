@@ -1,10 +1,10 @@
 package kr.eddi.demo.domain.board.controller;
 
-import kr.eddi.demo.domain.board.controller.form.BoardModifyRequestForm;
 import kr.eddi.demo.domain.board.controller.form.BoardRegisterRequestForm;
+import kr.eddi.demo.domain.board.controller.form.BoardRequestResponseForm;
+import kr.eddi.demo.domain.board.controller.form.BoardResponseForm;
 import kr.eddi.demo.domain.board.entity.Board;
 import kr.eddi.demo.domain.board.service.BoardService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -22,25 +22,22 @@ public class BoardController {
     public List<Board> requestBoards (@PathVariable("ticker") String ticker) {
         log.info("ticker" + ticker);
 
-        List<Board> boardList = boardService.list(ticker);
-        log.info("requestBoards: " + boardList);
+        List<Board> boards = boardService.list(ticker);
 
-        return boardList;
+        return boards;
     }
 
     @PostMapping("/register/{ticker}")
-    public Board registerBoard (@RequestBody BoardRegisterRequestForm requestForm,
-                                @PathVariable("ticker") String ticker) {
-        log.info("registerBoard()");
+    public BoardResponseForm registerBoard (@RequestBody BoardRegisterRequestForm requestForm,
+                                            @PathVariable("ticker") String ticker) {
 
         return boardService.register(requestForm, ticker);
     }
-    @GetMapping("/{ticker}/{id}")
-    public Board readBoard (@PathVariable("ticker") String ticker,
-                       @PathVariable("id") Long id) {
+    @GetMapping("/{ticker}/{orderNumber}")
+    public BoardRequestResponseForm requestBoard (@PathVariable("ticker") String ticker,
+                               @PathVariable("orderNumber") Integer orderNumber) {
 
-        Board board = boardService.read(ticker, id);
-        return board;
+        return boardService.request(ticker, orderNumber);
     }
     @PutMapping("/{ticker}/{id}")
     public void modifyBoard (@RequestBody BoardRegisterRequestForm requestForm,

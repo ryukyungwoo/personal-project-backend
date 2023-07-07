@@ -9,4 +9,6 @@ public interface StockService {
     void save(String requestSaveUrl);
 
     List<Stock> list();
+
+    List<Stock> getStockList(String requestSaveUrl);
 }

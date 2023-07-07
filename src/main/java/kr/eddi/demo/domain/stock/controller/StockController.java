@@ -1,6 +1,4 @@
 package kr.eddi.demo.domain.stock.controller;
-
-import kr.eddi.demo.domain.board.entity.Board;
 import kr.eddi.demo.domain.stock.controller.form.StockDataSaveRequestForm;
 import kr.eddi.demo.domain.stock.entity.Stock;
 import kr.eddi.demo.domain.stock.service.StockService;
