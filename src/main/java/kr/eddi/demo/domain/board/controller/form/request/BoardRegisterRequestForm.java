@@ -1,4 +1,4 @@
-package kr.eddi.demo.domain.board.controller.form;
+package kr.eddi.demo.domain.board.controller.form.request;
 
 import kr.eddi.demo.domain.board.service.request.BoardRegisterRequest;
 import lombok.Getter;

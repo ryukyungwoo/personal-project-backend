@@ -1,8 +1,8 @@
 package kr.eddi.demo.domain.board.service;
 
-import kr.eddi.demo.domain.board.controller.form.BoardRegisterRequestForm;
-import kr.eddi.demo.domain.board.controller.form.BoardRequestResponseForm;
-import kr.eddi.demo.domain.board.controller.form.BoardResponseForm;
+import kr.eddi.demo.domain.board.controller.form.request.BoardRegisterRequestForm;
+import kr.eddi.demo.domain.board.controller.form.response.BoardRequestResponseForm;
+import kr.eddi.demo.domain.board.controller.form.response.BoardRegisterResponseForm;
 import kr.eddi.demo.domain.board.entity.Board;
 //import kr.eddi.demo.domain.board.entity.StockBoardList;
 import kr.eddi.demo.domain.board.entity.StockBoardList;
@@ -13,7 +13,6 @@ import kr.eddi.demo.domain.stock.entity.Stock;
 import kr.eddi.demo.domain.stock.repository.StockRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -30,60 +29,126 @@ public class BoardServiceImpl implements BoardService{
     final private StockBoardListRepository stockBoardListRepository;
 
     @Override
-    public List<Board> list(String ticker) {
-        return null;
+    public List<BoardRequestResponseForm> list(String ticker) {
+        Optional<StockBoardList> maybeStockBoardList = stockBoardListRepository.findByStockTicker(ticker);
+
+        if (maybeStockBoardList.isEmpty()) {
+            return null;
+        }
+        StockBoardList stockBoardList = maybeStockBoardList.get();
+        List<Board> boards = stockBoardList.getBoards();
+
+        List<BoardRequestResponseForm> responseForms = new ArrayList<>();
+        for (Board board : boards) {
+            BoardRequestResponseForm responseForm = new BoardRequestResponseForm(
+                    board.getId(),
+                    board.getTitle(),
+                    board.getWriter(),
+                    board.getContent(),
+                    board.getCreateDate()
+            );
+            responseForms.add(responseForm);
+        }
+
+        return responseForms;
     }
 
     @Override
-    public BoardResponseForm register(BoardRegisterRequestForm requestForm, String ticker) {
+    public BoardRegisterResponseForm register(BoardRegisterRequestForm requestForm, String ticker) {
+
+        Optional<StockBoardList> maybeStockBoardList = stockBoardListRepository.findByStockTicker(ticker);
+
+        if (maybeStockBoardList.isPresent()) {
+            StockBoardList stockBoardList = maybeStockBoardList.get();
+            Board board = requestForm.toBoardRegisterRequest().toBoard();
+            board.setStockBoardList(stockBoardList);
+            stockBoardList.getBoards().add(board);
+            boardRepository.save(board);
+
+            BoardRegisterResponseForm responseForm = new BoardRegisterResponseForm();
+            responseForm.setId(board.getId());
+            responseForm.setTicker(ticker);
+            return responseForm;
+        }
 
         Board board = requestForm.toBoardRegisterRequest().toBoard();
         Stock stock = stockRepository.findByTicker(ticker).get();
+
         StockBoardList stockBoardList = new StockBoardList(stock, new ArrayList<>());
+        stockBoardListRepository.save(stockBoardList);
 
         board.setStockBoardList(stockBoardList);
-
         boardRepository.save(board);
-        stockBoardListRepository.save(stockBoardList);
-        BoardResponseForm responseForm = new BoardResponseForm();
 
-        responseForm.setOrderNumber(1);
+        BoardRegisterResponseForm responseForm = new BoardRegisterResponseForm();
+
+        responseForm.setId(board.getId());
         responseForm.setTicker(ticker);
 
-        log.info("OrderNum: " + responseForm.getOrderNumber());
-        log.info("ticker" + responseForm.getTicker());
+        log.debug("id: " + responseForm.getId());
+        log.debug("ticker" + responseForm.getTicker());
 
         return responseForm;
     }
 
     @Override
-    public BoardRequestResponseForm request(String ticker, Integer orderNumber) {
+    public BoardRequestResponseForm request(String ticker, Long id) {
         Stock stock = stockRepository.findByTicker(ticker).get();
         Optional<StockBoardList> maybeStockBoardList = stockBoardListRepository.findByStockTicker(stock.getTicker());
 
            if (maybeStockBoardList.isEmpty()){
-               log.info("no stockBoardList");
+               log.debug("no stockBoardList");
                return null;
            }
 
-           Board board =  maybeStockBoardList.get().getBoards().get((orderNumber - 1));
-           log.info("board: " + board);
+            Board board = boardRepository.findById(id).get();
 
            BoardRequestResponseForm responseForm = new BoardRequestResponseForm();
+           responseForm.setId(board.getId());
            responseForm.setTitle(board.getTitle());
            responseForm.setWriter(board.getWriter());
            responseForm.setContent(board.getContent());
+           responseForm.setUpdateDate(board.getCreateDate());
 
             return responseForm;
     }
 
     @Override
-    public void modify(BoardRegisterRequestForm requestForm, String ticker, Long id) {
+    public BoardRequestResponseForm modify(BoardRegisterRequestForm requestForm, String ticker, Long id) {
+        Stock stock = stockRepository.findByTicker(ticker).get();
+        Optional<StockBoardList> maybeStockBoardList = stockBoardListRepository.findByStockTicker(stock.getTicker());
 
+        if (maybeStockBoardList.isEmpty()){
+            log.debug("no stockBoardList");
+            return null;
+        }
+        Board board = boardRepository.findById(id).get();
+
+        board.setTitle(requestForm.getTitle());
+        board.setContent(requestForm.getContent());
+        board.setCreateDate(requestForm.toBoardRegisterRequest().toBoard().getCreateDate());
+
+        boardRepository.save(board);
+
+        BoardRequestResponseForm responseForm = new BoardRequestResponseForm();
+        responseForm.setId(board.getId());
+        responseForm.setTitle(board.getTitle());
+        responseForm.setWriter(board.getWriter());
+        responseForm.setContent(board.getContent());
+        responseForm.setUpdateDate(board.getCreateDate());
+
+        return responseForm;
     }
 
     @Override
     public void delete(String ticker, Long id) {
+        Stock stock = stockRepository.findByTicker(ticker).get();
+        Optional<StockBoardList> maybeStockBoardList = stockBoardListRepository.findByStockTicker(stock.getTicker());
 
+        if (maybeStockBoardList.isEmpty()){
+            log.debug("no stockBoardList");
+        }
+
+        boardRepository.deleteById(id);
     }
 }

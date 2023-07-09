@@ -1,42 +1,32 @@
-package kr.eddi.demo.domain.board.entity;
+package kr.eddi.demo.domain.board.controller.form.response;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import kr.eddi.demo.domain.stock.entity.Stock;
+import kr.eddi.demo.domain.board.entity.StockBoardList;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity
-@ToString
-@Getter
+@Data
 @NoArgsConstructor
-public class Board {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class BoardRequestResponseForm {
     private Long id;
-    @Setter
     private String title;
     private String writer;
-    @Setter
     private String content;
-    @Setter
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
     @UpdateTimestamp
-    private LocalDateTime createDate;
+    private LocalDateTime updateDate;
 
-    @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "stock_board_list_id")
-    private StockBoardList stockBoardList;
-
-    public Board(String title, String writer, String content) {
+    public BoardRequestResponseForm(Long id, String title, String writer, String content, LocalDateTime updateDate) {
+        this.id = id;
         this.title = title;
         this.writer = writer;
         this.content = content;
+        this.updateDate = updateDate;
     }
-
 }
