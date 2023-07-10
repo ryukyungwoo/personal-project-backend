@@ -30,12 +30,8 @@ public class BoardServiceImpl implements BoardService{
 
     @Override
     public List<BoardRequestResponseForm> list(String ticker) {
-        Optional<StockBoardList> maybeStockBoardList = stockBoardListRepository.findByStockTicker(ticker);
 
-        if (maybeStockBoardList.isEmpty()) {
-            return null;
-        }
-        StockBoardList stockBoardList = maybeStockBoardList.get();
+        StockBoardList stockBoardList = findByTicker(ticker);
         List<Board> boards = stockBoardList.getBoards();
 
         List<BoardRequestResponseForm> responseForms = new ArrayList<>();
@@ -72,7 +68,12 @@ public class BoardServiceImpl implements BoardService{
         }
 
         Board board = requestForm.toBoardRegisterRequest().toBoard();
-        Stock stock = stockRepository.findByTicker(ticker).get();
+
+        Optional<Stock> maybeStock = stockRepository.findByTicker(ticker);
+        if (maybeStock.isEmpty()) {
+            log.debug("Stock not found");
+        }
+        Stock stock = maybeStock.get();
 
         StockBoardList stockBoardList = new StockBoardList(stock, new ArrayList<>());
         stockBoardListRepository.save(stockBoardList);
@@ -93,14 +94,8 @@ public class BoardServiceImpl implements BoardService{
 
     @Override
     public BoardRequestResponseForm request(String ticker, Long id) {
-        Stock stock = stockRepository.findByTicker(ticker).get();
-        Optional<StockBoardList> maybeStockBoardList = stockBoardListRepository.findByStockTicker(stock.getTicker());
 
-           if (maybeStockBoardList.isEmpty()){
-               log.debug("no stockBoardList");
-               return null;
-           }
-
+        StockBoardList stockBoardList = findByTicker(ticker);
             Board board = boardRepository.findById(id).get();
 
            BoardRequestResponseForm responseForm = new BoardRequestResponseForm();
@@ -115,13 +110,8 @@ public class BoardServiceImpl implements BoardService{
 
     @Override
     public BoardRequestResponseForm modify(BoardRegisterRequestForm requestForm, String ticker, Long id) {
-        Stock stock = stockRepository.findByTicker(ticker).get();
-        Optional<StockBoardList> maybeStockBoardList = stockBoardListRepository.findByStockTicker(stock.getTicker());
 
-        if (maybeStockBoardList.isEmpty()){
-            log.debug("no stockBoardList");
-            return null;
-        }
+        StockBoardList stockBoardList = findByTicker(ticker);
         Board board = boardRepository.findById(id).get();
 
         board.setTitle(requestForm.getTitle());
@@ -142,13 +132,21 @@ public class BoardServiceImpl implements BoardService{
 
     @Override
     public void delete(String ticker, Long id) {
-        Stock stock = stockRepository.findByTicker(ticker).get();
-        Optional<StockBoardList> maybeStockBoardList = stockBoardListRepository.findByStockTicker(stock.getTicker());
+        boardRepository.deleteById(id);
+    }
 
+    public StockBoardList findByTicker (String ticker) {
+        Optional<Stock> maybeStock = stockRepository.findByTicker(ticker);
+        if (maybeStock.isEmpty()) {
+            log.debug("Stock not found");
+        }
+        Stock stock = maybeStock.get();
+
+        Optional<StockBoardList> maybeStockBoardList = stockBoardListRepository.findByStockTicker(stock.getTicker());
         if (maybeStockBoardList.isEmpty()){
             log.debug("no stockBoardList");
+            return null;
         }
-
-        boardRepository.deleteById(id);
+        return maybeStockBoardList.get();
     }
 }
