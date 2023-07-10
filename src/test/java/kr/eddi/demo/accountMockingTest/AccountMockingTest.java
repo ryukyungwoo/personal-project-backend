@@ -32,7 +32,7 @@ public class AccountMockingTest {
     public void 회원을_등록합니다 () {
         final AccountRegisterRequestFrom requestFrom = new AccountRegisterRequestFrom("이메일", "작성자");
 
-        final Account account =requestFrom.toAccountRegisterRequest().toAccount();
+        final Account account = requestFrom.toAccountRegisterRequest().toAccount();
         when(mockRepository.save(account)).thenReturn(new Account("이메일", "작성자"));
     }
 
