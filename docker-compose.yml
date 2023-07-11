@@ -19,7 +19,7 @@ services:
       - app # 'app' 네트워크 연결
   # 두 번째 구성요소: 서버
   server:
-    image: ghcr.io/ryukyungwoo/my_project:latest # 기본 이미지
+    image: ghcr.io/ryukyungwoo/personal-project-backend:latest # 기본 이미지
     build: . # 소스코드 위치
     container_name: backend-deploy-test-server
     volumes:
