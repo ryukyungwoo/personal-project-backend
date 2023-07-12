@@ -32,6 +32,9 @@ public class BoardServiceImpl implements BoardService{
     public List<BoardRequestResponseForm> list(String ticker) {
 
         StockBoardList stockBoardList = findByTicker(ticker);
+        if(stockBoardList == null) {
+            return null;
+        }
         List<Board> boards = stockBoardList.getBoards();
 
         List<BoardRequestResponseForm> responseForms = new ArrayList<>();
@@ -96,6 +99,9 @@ public class BoardServiceImpl implements BoardService{
     public BoardRequestResponseForm request(String ticker, Long id) {
 
         StockBoardList stockBoardList = findByTicker(ticker);
+        if(stockBoardList == null) {
+            return null;
+        }
             Board board = boardRepository.findById(id).get();
 
            BoardRequestResponseForm responseForm = new BoardRequestResponseForm();
@@ -112,6 +118,9 @@ public class BoardServiceImpl implements BoardService{
     public BoardRequestResponseForm modify(BoardRegisterRequestForm requestForm, String ticker, Long id) {
 
         StockBoardList stockBoardList = findByTicker(ticker);
+        if(stockBoardList == null) {
+            return null;
+        }
         Board board = boardRepository.findById(id).get();
 
         board.setTitle(requestForm.getTitle());
