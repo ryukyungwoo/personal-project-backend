@@ -3,7 +3,6 @@ package kr.eddi.demo.domain.board.controller.form.request;
 import kr.eddi.demo.domain.board.service.request.BoardRegisterRequest;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 @Getter

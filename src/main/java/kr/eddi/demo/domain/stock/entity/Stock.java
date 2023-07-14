@@ -1,15 +1,10 @@
 package kr.eddi.demo.domain.stock.entity;
 
 import jakarta.persistence.*;
-import kr.eddi.demo.domain.board.entity.Board;
 import kr.eddi.demo.domain.board.entity.StockBoardList;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -29,3 +24,4 @@ public class Stock {
         this.stockName = stockName;
     }
 }
+

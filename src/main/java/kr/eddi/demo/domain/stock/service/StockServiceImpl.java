@@ -1,11 +1,11 @@
 package kr.eddi.demo.domain.stock.service;
 
-import kr.eddi.demo.domain.stock.controller.form.StockDataSaveRequestForm;
+import kr.eddi.demo.domain.stock.controller.form.request.StockDataSaveRequestForm;
+import kr.eddi.demo.domain.stock.controller.form.response.StockNameResponseForm;
 import kr.eddi.demo.domain.stock.entity.Stock;
 import kr.eddi.demo.domain.stock.repository.StockRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -13,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -79,5 +80,20 @@ public class StockServiceImpl implements StockService{
         }
 
         return stockList;
+    }
+
+    @Override
+    public StockNameResponseForm getStockName(String ticker) {
+        Optional<Stock> maybeStock = stockRepository.findByTicker(ticker);
+        if(maybeStock.isEmpty()) {
+            log.info("잘못된 ticker 이거나 없는 주식 입니다");
+            return null;
+        }
+        Stock stock = maybeStock.get();
+        StockNameResponseForm responseForm = StockNameResponseForm.builder()
+                                                .stockName(stock.getStockName())
+                                                .ticker(stock.getTicker())
+                                                .build();
+        return responseForm;
     }
 }

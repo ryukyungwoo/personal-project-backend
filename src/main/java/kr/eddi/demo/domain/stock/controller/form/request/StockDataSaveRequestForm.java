@@ -1,4 +1,4 @@
-package kr.eddi.demo.domain.stock.controller.form;
+package kr.eddi.demo.domain.stock.controller.form.request;
 
 import kr.eddi.demo.domain.stock.service.request.StockDataSaveRequest;
 import lombok.AllArgsConstructor;

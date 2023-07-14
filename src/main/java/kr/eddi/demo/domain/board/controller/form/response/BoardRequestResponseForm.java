@@ -1,14 +1,11 @@
 package kr.eddi.demo.domain.board.controller.form.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.*;
-import kr.eddi.demo.domain.board.entity.StockBoardList;
-import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @NoArgsConstructor

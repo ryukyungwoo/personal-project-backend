@@ -1,17 +1,16 @@
 package kr.eddi.demo.domain.board.service;
 
 import kr.eddi.demo.domain.board.controller.form.request.BoardRegisterRequestForm;
-import kr.eddi.demo.domain.board.controller.form.response.BoardRequestResponseForm;
 import kr.eddi.demo.domain.board.controller.form.response.BoardRegisterResponseForm;
+import kr.eddi.demo.domain.board.controller.form.response.BoardRequestResponseForm;
 import kr.eddi.demo.domain.board.entity.Board;
-//import kr.eddi.demo.domain.board.entity.StockBoardList;
 import kr.eddi.demo.domain.board.entity.StockBoardList;
 import kr.eddi.demo.domain.board.repository.BoardRepository;
-//import kr.eddi.demo.domain.board.repository.StockBoardListRepository;
 import kr.eddi.demo.domain.board.repository.StockBoardListRepository;
 import kr.eddi.demo.domain.stock.entity.Stock;
 import kr.eddi.demo.domain.stock.repository.StockRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -21,11 +20,13 @@ import java.util.Optional;
 
 @Slf4j
 @Service
+@ToString
 @RequiredArgsConstructor
 public class BoardServiceImpl implements BoardService{
 
     final private BoardRepository boardRepository;
     final private StockRepository stockRepository;
+
     final private StockBoardListRepository stockBoardListRepository;
 
     @Override
@@ -158,4 +159,6 @@ public class BoardServiceImpl implements BoardService{
         }
         return maybeStockBoardList.get();
     }
+
+
 }
