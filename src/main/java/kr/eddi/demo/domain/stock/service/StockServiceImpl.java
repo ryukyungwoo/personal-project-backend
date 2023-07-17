@@ -41,9 +41,7 @@ public class StockServiceImpl implements StockService{
         List<Stock> stockList = new ArrayList<>();
 
         for (int i = 0; i < tickerList.size(); i++) {
-            Stock stock = new Stock();
-            stock.setTicker(tickerList.get(i));
-            stock.setStockName(nameList.get(i));
+            Stock stock = new Stock(tickerList.get(i), nameList.get(i));
             stockList.add(stock);
         }
 

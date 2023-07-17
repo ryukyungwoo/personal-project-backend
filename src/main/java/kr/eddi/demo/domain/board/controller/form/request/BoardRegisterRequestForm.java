@@ -1,6 +1,6 @@
 package kr.eddi.demo.domain.board.controller.form.request;
 
-import kr.eddi.demo.domain.board.service.request.BoardRegisterRequest;
+//import kr.eddi.demo.domain.board.service.request.BoardRegisterRequest;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -17,9 +17,5 @@ public class BoardRegisterRequestForm {
         this.title = title;
         this.content = content;
         this.writer = writer;
-    }
-
-    public BoardRegisterRequest toBoardRegisterRequest() {
-        return new BoardRegisterRequest(title, writer, content);
     }
 }
