@@ -55,7 +55,6 @@ public class RedisServiceImpl implements RedisService{
 
     public void saveMessageInRedis(Message message, String ticker) {
         Optional<Stock> maybeStock = stockRepository.findByTicker(ticker);
-        log.info("maybeStock: " + maybeStock.get());
         if (maybeStock.isEmpty()){
             return;
         }

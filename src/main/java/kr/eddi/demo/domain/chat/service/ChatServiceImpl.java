@@ -59,7 +59,6 @@ public class ChatServiceImpl implements ChatService{
                     client.getBasicRemote().sendText(session.getId() + ": " + content);
                 }
 
-                log.info("message: " + message);
                 redisService.saveMessageInRedis(message, ticker);
             }
         }
