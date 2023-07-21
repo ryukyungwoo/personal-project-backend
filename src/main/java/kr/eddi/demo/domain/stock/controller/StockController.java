@@ -37,4 +37,8 @@ public class StockController {
     public StockNameResponseForm responseStockName (@PathVariable("ticker") String ticker) {
        return stockService.getStockName(ticker);
     }
+    @GetMapping("/opinion-mining")
+    public void requestStockOpinion (){
+        stockService.getOpinionTest();
+    }
 }

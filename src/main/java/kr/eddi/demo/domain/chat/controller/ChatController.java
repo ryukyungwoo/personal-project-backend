@@ -8,7 +8,6 @@ import jakarta.websocket.server.PathParam;
 import jakarta.websocket.server.ServerEndpoint;
 import kr.eddi.demo.config.ApplicationContextProvider;
 import kr.eddi.demo.domain.chat.service.ChatService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 

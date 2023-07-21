@@ -13,4 +13,6 @@ public interface StockService {
     List<Stock> getStockList(String requestSaveUrl);
 
     StockNameResponseForm getStockName(String ticker);
+
+    void getOpinionTest();
 }

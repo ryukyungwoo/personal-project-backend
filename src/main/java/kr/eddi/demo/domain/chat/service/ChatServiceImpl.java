@@ -3,7 +3,6 @@ package kr.eddi.demo.domain.chat.service;
 import jakarta.websocket.Session;
 import kr.eddi.demo.domain.chat.entity.Message;
 import kr.eddi.demo.domain.chat.repository.MessageRepository;
-import kr.eddi.demo.domain.stock.entity.Stock;
 import kr.eddi.demo.domain.stock.repository.StockRepository;
 import kr.eddi.demo.util.redis.RedisService;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +18,6 @@ import java.util.*;
 public class ChatServiceImpl implements ChatService{
 
         final static private Map<String, Set<Session>> ROOMS = Collections.synchronizedMap(new HashMap<>());
-        final private StockRepository stockRepository;
-        final private MessageRepository messageRepository;
         final private RedisService redisService;
 
         @Override

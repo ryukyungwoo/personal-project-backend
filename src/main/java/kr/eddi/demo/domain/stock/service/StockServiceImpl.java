@@ -1,8 +1,11 @@
 package kr.eddi.demo.domain.stock.service;
 
+import kr.eddi.demo.domain.stock.controller.form.request.OpinionDataSaveRequestForm;
 import kr.eddi.demo.domain.stock.controller.form.request.StockDataSaveRequestForm;
 import kr.eddi.demo.domain.stock.controller.form.response.StockNameResponseForm;
 import kr.eddi.demo.domain.stock.entity.Stock;
+import kr.eddi.demo.domain.stock.entity.StockOpinion;
+import kr.eddi.demo.domain.stock.repository.StockOpinionRepository;
 import kr.eddi.demo.domain.stock.repository.StockRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +24,7 @@ import java.util.Optional;
 public class StockServiceImpl implements StockService{
 
     final private StockRepository stockRepository;
+    final private StockOpinionRepository stockOpinionRepository;
 
     final private RestTemplate restTemplate;
 
@@ -93,5 +97,40 @@ public class StockServiceImpl implements StockService{
                                                 .ticker(stock.getTicker())
                                                 .build();
         return responseForm;
+    }
+
+    @Override
+    public void getOpinionTest() {
+//        List<Stock> stockList = stockRepository.findAll();
+//        List<String> stockTickerList = new ArrayList<>();
+//        for (Stock stock : stockList) {
+//            stockTickerList.add(stock.getTicker());
+//        }
+//        for (String ticker : stockTickerList) {
+//            String requestSaveUrl = "http://localhost:8000/opinion-mining/";
+//            ResponseEntity<OpinionDataSaveRequestForm> response = restTemplate.getForEntity(requestSaveUrl + ticker, OpinionDataSaveRequestForm.class);
+//            StockOpinion stockOpinionMining = response.getBody().toOpinionDataSaveRequest().toStockOpinionMining();
+//            stockOpinionRepository.save(stockOpinionMining);
+//        }
+        String requestSaveUrl = "http://localhost:8000/opinion-mining/";
+        ResponseEntity<OpinionDataSaveRequestForm> response = restTemplate.getForEntity(requestSaveUrl + 950210, OpinionDataSaveRequestForm.class);
+
+        Optional<StockOpinion> maybeStockOpinion = stockOpinionRepository.findByTicker("950210");
+
+        if (maybeStockOpinion.isPresent()){
+            stockOpinionRepository.delete(maybeStockOpinion.get());
+        }
+
+        StockOpinion stockOpinionMining = response.getBody().toOpinionDataSaveRequest().toStockOpinionMining();
+        Optional<Stock> maybeStock = stockRepository.findByTicker("950210");
+
+        if (maybeStock.isEmpty()) {
+            log.info("잘못된 ticker 이거나 없는 주식입니다");
+        }
+
+        Stock stock = maybeStock.get();
+        stockOpinionMining.setStock(stock);
+        stockOpinionRepository.save(stockOpinionMining);
+
     }
 }
