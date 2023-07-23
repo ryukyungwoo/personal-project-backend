@@ -15,6 +15,9 @@ import kr.eddi.demo.domain.stock.service.request.StockOCVASaveRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -158,19 +161,21 @@ public class StockServiceImpl implements StockService{
     }
 
     @Override
-    public List<StockOCVAResponseForm> list(String OCVA, String ascending) {
+    public List<StockOCVAResponseForm> list(String OCVA, String ascending, int pageNumber) {
+        final int PAGE_SIZE = 30;
         Sort sort;
         if ("asc".equals(ascending)){
             sort = Sort.by(Sort.Order.asc(OCVA));
         } else {
             sort = Sort.by(Sort.Order.desc(OCVA));
         }
-        log.info("ascending: " + ascending);
-        List<StockOCVA> stockOCVAList = stockOCVARepository.findAll(sort);
+
+        Pageable pageable = PageRequest.of(pageNumber, PAGE_SIZE, sort);
+        Page<StockOCVA> stockOCVAPage = stockOCVARepository.findAll(pageable);
 
         List<StockOCVAResponseForm> OCVAList = new ArrayList<>();
 
-        for (StockOCVA stockOCVA : stockOCVAList) {
+        for (StockOCVA stockOCVA : stockOCVAPage.getContent()) {
             StockOCVAResponseForm responseForm = new StockOCVAResponseForm().builder()
                     .stockName(stockOCVA.getStockName())
                     .open(stockOCVA.getOpen())

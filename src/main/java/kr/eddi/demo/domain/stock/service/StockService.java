@@ -17,5 +17,5 @@ public interface StockService {
 
     void getOCVAData();
 
-    List<StockOCVAResponseForm> list(String OCVA, String ascending);
+    List<StockOCVAResponseForm> list(String OCVA, String ascending, int pageNumber);
 }

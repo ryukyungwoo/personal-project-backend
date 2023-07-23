@@ -40,9 +40,11 @@ public class StockController {
     public void saveOHCLVAData () {
         stockService.getOCVAData();
     }
-    @GetMapping("/list/{OCVA}/{ascending}")
+    @GetMapping("/list/{OCVA}/{ascending}/{pageNumber}")
     public List<StockOCVAResponseForm> stockListResponse (@PathVariable("OCVA") String OCVA,
-                                                          @PathVariable("ascending") String ascending) {
-        return stockService.list(OCVA, ascending);
+                                                          @PathVariable("ascending") String ascending,
+                                                          @PathVariable("pageNumber") int pageNumber
+                                                          ) {
+        return stockService.list(OCVA, ascending, pageNumber);
     }
 }
