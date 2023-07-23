@@ -1,6 +1,7 @@
 package kr.eddi.demo.domain.stock.controller;
 
 import kr.eddi.demo.domain.stock.controller.form.response.StockNameResponseForm;
+import kr.eddi.demo.domain.stock.controller.form.response.StockOCVAResponseForm;
 import kr.eddi.demo.domain.stock.entity.Stock;
 import kr.eddi.demo.domain.stock.service.StockService;
 import lombok.RequiredArgsConstructor;
@@ -27,12 +28,6 @@ public class StockController {
         String requestSaveUrl = "http://localhost:8000/stock/save-data";
         stockService.save(requestSaveUrl);
     }
-    @GetMapping("/list")
-    public List<Stock> stockList () {
-
-        List<Stock> returnedBoardList = stockService.list();
-        return returnedBoardList;
-    }
     @GetMapping("/name/{ticker}")
     public StockNameResponseForm responseStockName (@PathVariable("ticker") String ticker) {
        return stockService.getStockName(ticker);
@@ -44,5 +39,10 @@ public class StockController {
     @GetMapping("/save-OCVA-data")
     public void saveOHCLVAData () {
         stockService.getOCVAData();
+    }
+    @GetMapping("/list/{OCVA}/{ascending}")
+    public List<StockOCVAResponseForm> stockListResponse (@PathVariable("OCVA") String OCVA,
+                                                          @PathVariable("ascending") String ascending) {
+        return stockService.list(OCVA, ascending);
     }
 }

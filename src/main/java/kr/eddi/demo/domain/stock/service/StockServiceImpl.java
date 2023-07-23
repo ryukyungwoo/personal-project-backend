@@ -4,6 +4,7 @@ import kr.eddi.demo.domain.stock.controller.form.request.OpinionDataSaveRequestF
 import kr.eddi.demo.domain.stock.controller.form.request.StockDataSaveRequestForm;
 import kr.eddi.demo.domain.stock.controller.form.request.StockOCVASaveRequestForm;
 import kr.eddi.demo.domain.stock.controller.form.response.StockNameResponseForm;
+import kr.eddi.demo.domain.stock.controller.form.response.StockOCVAResponseForm;
 import kr.eddi.demo.domain.stock.entity.Stock;
 import kr.eddi.demo.domain.stock.entity.StockOCVA;
 import kr.eddi.demo.domain.stock.entity.StockOpinion;
@@ -57,12 +58,6 @@ public class StockServiceImpl implements StockService{
         }
 
         stockRepository.saveAll(stockList);
-    }
-
-    @Override
-    public List<Stock> list() {
-
-        return stockRepository.findAll(Sort.by(Sort.Direction.DESC, "ticker"));
     }
 
     @Override
@@ -160,6 +155,34 @@ public class StockServiceImpl implements StockService{
 
             stockOCVARepository.save(stockOCVA);
         }
+    }
+
+    @Override
+    public List<StockOCVAResponseForm> list(String OCVA, String ascending) {
+        Sort sort;
+        if ("asc".equals(ascending)){
+            sort = Sort.by(Sort.Order.asc(OCVA));
+        } else {
+            sort = Sort.by(Sort.Order.desc(OCVA));
+        }
+        log.info("ascending: " + ascending);
+        List<StockOCVA> stockOCVAList = stockOCVARepository.findAll(sort);
+
+        List<StockOCVAResponseForm> OCVAList = new ArrayList<>();
+
+        for (StockOCVA stockOCVA : stockOCVAList) {
+            StockOCVAResponseForm responseForm = new StockOCVAResponseForm().builder()
+                    .stockName(stockOCVA.getStockName())
+                    .open(stockOCVA.getOpen())
+                    .close(stockOCVA.getClose())
+                    .rangeValue(stockOCVA.getRangeValue())
+                    .fluctuationRate(stockOCVA.getFluctuationRate())
+                    .volume(stockOCVA.getVolume())
+                    .amount(stockOCVA.getAmount())
+                    .build();
+            OCVAList.add(responseForm);
+        }
+        return OCVAList;
     }
 
 }
