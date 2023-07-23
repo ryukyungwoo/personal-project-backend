@@ -2,14 +2,20 @@ package kr.eddi.demo.domain.stock.service;
 
 import kr.eddi.demo.domain.stock.controller.form.request.OpinionDataSaveRequestForm;
 import kr.eddi.demo.domain.stock.controller.form.request.StockDataSaveRequestForm;
+import kr.eddi.demo.domain.stock.controller.form.request.StockOCVASaveRequestForm;
 import kr.eddi.demo.domain.stock.controller.form.response.StockNameResponseForm;
 import kr.eddi.demo.domain.stock.entity.Stock;
+import kr.eddi.demo.domain.stock.entity.StockOCVA;
 import kr.eddi.demo.domain.stock.entity.StockOpinion;
+import kr.eddi.demo.domain.stock.repository.StockOCVARepository;
 import kr.eddi.demo.domain.stock.repository.StockOpinionRepository;
 import kr.eddi.demo.domain.stock.repository.StockRepository;
+import kr.eddi.demo.domain.stock.service.request.StockOCVASaveRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -25,6 +31,7 @@ public class StockServiceImpl implements StockService{
 
     final private StockRepository stockRepository;
     final private StockOpinionRepository stockOpinionRepository;
+    final private StockOCVARepository stockOCVARepository;
 
     final private RestTemplate restTemplate;
 
@@ -111,17 +118,48 @@ public class StockServiceImpl implements StockService{
         }
 
         Stock stock = maybeStock.get();
-        StockOpinion responseStockOpinion = response.getBody().toOpinionDataSaveRequest().toStockOpinionMining();
+        StockOpinion receivedStockOpinion = response.getBody().toOpinionDataSaveRequest().toStockOpinionMining();
 
         StockOpinion stockOpinion = new StockOpinion().builder()
-                                        .totalSentimentScore(responseStockOpinion.getTotalSentimentScore())
-                                        .positiveCount(responseStockOpinion.getPositiveCount())
-                                        .negativeCount(responseStockOpinion.getNegativeCount())
-                                        .naturalCount(responseStockOpinion.getNaturalCount())
+                                        .totalSentimentScore(receivedStockOpinion.getTotalSentimentScore())
+                                        .positiveCount(receivedStockOpinion.getPositiveCount())
+                                        .negativeCount(receivedStockOpinion.getNegativeCount())
+                                        .naturalCount(receivedStockOpinion.getNaturalCount())
                                         .build();
 
         stockOpinion.setStock(stock);
         stockOpinion.setId(stock.getTicker());
         stockOpinionRepository.save(stockOpinion);
     }
+
+    @Override
+    public void getOCVAData() {
+        String requestSaveUrl = "http://localhost:8000/stock/list/";
+
+        // ResponseEntity의 타입을 'List<StockOCVASaveRequest>'로 변경하십시오.
+        ResponseEntity<List<StockOCVASaveRequestForm>> responseForm = restTemplate.exchange(requestSaveUrl + "시가/False",
+                HttpMethod.GET, null, new ParameterizedTypeReference<List<StockOCVASaveRequestForm>>() {});
+
+        List<StockOCVASaveRequestForm> stockForms = responseForm.getBody();
+
+        // 리스트를 반복 처리하십시오.
+        for (StockOCVASaveRequestForm stockForm : stockForms) {
+            StockOCVA receivedStockOCVA = stockForm.toStockOCVASaveRequest().toStockOCVA();
+            String stockName = stockRepository.findByTicker(receivedStockOCVA.getTicker()).get().getStockName();
+
+            StockOCVA stockOCVA = new StockOCVA().builder()
+                    .ticker(receivedStockOCVA.getTicker())
+                    .stockName(stockName)
+                    .open(receivedStockOCVA.getOpen())
+                    .close(receivedStockOCVA.getClose())
+                    .rangeValue(receivedStockOCVA.getRangeValue())
+                    .fluctuationRate(receivedStockOCVA.getFluctuationRate())
+                    .amount(receivedStockOCVA.getAmount())
+                    .volume(receivedStockOCVA.getVolume())
+                    .build();
+
+            stockOCVARepository.save(stockOCVA);
+        }
+    }
+
 }

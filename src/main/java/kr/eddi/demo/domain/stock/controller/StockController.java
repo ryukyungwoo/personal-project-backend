@@ -41,4 +41,8 @@ public class StockController {
     public void requestStockOpinion (){
         stockService.getOpinionTest();
     }
+    @GetMapping("/save-OCVA-data")
+    public void saveOHCLVAData () {
+        stockService.getOCVAData();
+    }
 }

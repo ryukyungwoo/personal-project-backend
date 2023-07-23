@@ -15,4 +15,6 @@ public interface StockService {
     StockNameResponseForm getStockName(String ticker);
 
     void getOpinionTest();
+
+    void getOCVAData();
 }
