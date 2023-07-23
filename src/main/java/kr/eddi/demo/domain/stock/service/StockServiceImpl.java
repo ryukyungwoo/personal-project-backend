@@ -101,27 +101,9 @@ public class StockServiceImpl implements StockService{
 
     @Override
     public void getOpinionTest() {
-//        List<Stock> stockList = stockRepository.findAll();
-//        List<String> stockTickerList = new ArrayList<>();
-//        for (Stock stock : stockList) {
-//            stockTickerList.add(stock.getTicker());
-//        }
-//        for (String ticker : stockTickerList) {
-//            String requestSaveUrl = "http://localhost:8000/opinion-mining/";
-//            ResponseEntity<OpinionDataSaveRequestForm> response = restTemplate.getForEntity(requestSaveUrl + ticker, OpinionDataSaveRequestForm.class);
-//            StockOpinion stockOpinionMining = response.getBody().toOpinionDataSaveRequest().toStockOpinionMining();
-//            stockOpinionRepository.save(stockOpinionMining);
-//        }
         String requestSaveUrl = "http://localhost:8000/opinion-mining/";
         ResponseEntity<OpinionDataSaveRequestForm> response = restTemplate.getForEntity(requestSaveUrl + 950210, OpinionDataSaveRequestForm.class);
 
-        Optional<StockOpinion> maybeStockOpinion = stockOpinionRepository.findByTicker("950210");
-
-        if (maybeStockOpinion.isPresent()){
-            stockOpinionRepository.delete(maybeStockOpinion.get());
-        }
-
-        StockOpinion stockOpinionMining = response.getBody().toOpinionDataSaveRequest().toStockOpinionMining();
         Optional<Stock> maybeStock = stockRepository.findByTicker("950210");
 
         if (maybeStock.isEmpty()) {
@@ -129,8 +111,17 @@ public class StockServiceImpl implements StockService{
         }
 
         Stock stock = maybeStock.get();
-        stockOpinionMining.setStock(stock);
-        stockOpinionRepository.save(stockOpinionMining);
+        StockOpinion responseStockOpinion = response.getBody().toOpinionDataSaveRequest().toStockOpinionMining();
 
+        StockOpinion stockOpinion = new StockOpinion().builder()
+                                        .totalSentimentScore(responseStockOpinion.getTotalSentimentScore())
+                                        .positiveCount(responseStockOpinion.getPositiveCount())
+                                        .negativeCount(responseStockOpinion.getNegativeCount())
+                                        .naturalCount(responseStockOpinion.getNaturalCount())
+                                        .build();
+
+        stockOpinion.setStock(stock);
+        stockOpinion.setId(stock.getTicker());
+        stockOpinionRepository.save(stockOpinion);
     }
 }

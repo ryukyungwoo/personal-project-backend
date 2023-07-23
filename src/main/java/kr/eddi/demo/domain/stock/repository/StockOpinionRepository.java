@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
-public interface StockOpinionRepository extends JpaRepository<StockOpinion, Long> {
+public interface StockOpinionRepository extends JpaRepository<StockOpinion, String> {
 
     @Query("SELECT so FROM StockOpinion so JOIN FETCH so.stock s WHERE s.ticker = :ticker")
     Optional<StockOpinion> findByTicker(@Param("ticker") String ticker);
