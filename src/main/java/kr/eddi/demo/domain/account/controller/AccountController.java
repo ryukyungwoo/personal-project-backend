@@ -19,7 +19,7 @@ public class AccountController {
     final private AccountService accountService;
     @PostMapping("/sign-up")
     public boolean accountRegister (@RequestBody AccountRegisterRequestFrom requestFrom) {
-        return accountService.register(requestFrom.toAccountRegisterRequest());
+        return accountService.register(requestFrom);
     }
 
     @PostMapping("/sign-in")

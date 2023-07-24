@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
+@Getter
 public class AccountRegisterRequest {
-    @Getter
     final private String email;
     final private String password;
 
