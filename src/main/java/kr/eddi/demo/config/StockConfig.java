@@ -32,9 +32,8 @@ public class StockConfig {
 
     private void initStockRepository() {
         try {
-            String requestSaveUrl = "http://localhost:8000/stock/save-data";
             stockRepository.save(new Stock("1", "HomePage"));
-            List<Stock> newStockList = stockService.getStockList(requestSaveUrl);
+            List<Stock> newStockList = stockService.getStockList();
 
             List<Stock> existingStockList = stockRepository.findAll();
 

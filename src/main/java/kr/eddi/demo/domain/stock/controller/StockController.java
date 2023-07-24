@@ -24,9 +24,7 @@ public class StockController {
 
     @GetMapping("/save-data")
     public void saveStockData ( ) {
-
-        String requestSaveUrl = "http://localhost:8000/stock/save-data";
-        stockService.save(requestSaveUrl);
+        stockService.save();
     }
     @GetMapping("/name/{ticker}")
     public StockNameResponseForm responseStockName (@PathVariable("ticker") String ticker) {

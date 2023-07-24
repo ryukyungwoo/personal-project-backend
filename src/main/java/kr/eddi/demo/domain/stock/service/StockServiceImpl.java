@@ -1,5 +1,6 @@
 package kr.eddi.demo.domain.stock.service;
 
+import kr.eddi.demo.config.FastApiConfig;
 import kr.eddi.demo.domain.stock.controller.form.request.OpinionDataSaveRequestForm;
 import kr.eddi.demo.domain.stock.controller.form.request.StockDataSaveRequestForm;
 import kr.eddi.demo.domain.stock.controller.form.request.StockOCVASaveRequestForm;
@@ -38,10 +39,11 @@ public class StockServiceImpl implements StockService{
     final private StockOCVARepository stockOCVARepository;
 
     final private RestTemplate restTemplate;
+    final private FastApiConfig fastApiConfig;
 
     @Override
-    public void save(String requestSaveUrl) {
-
+    public void save() {
+        String requestSaveUrl = fastApiConfig.getFastApiAppUrl() + "/stock/save-data";
         ResponseEntity<StockDataSaveRequestForm> response = restTemplate.getForEntity(requestSaveUrl, StockDataSaveRequestForm.class);
 
         log.info("response" + response);
@@ -64,7 +66,8 @@ public class StockServiceImpl implements StockService{
     }
 
     @Override
-    public List<Stock> getStockList(String requestSaveUrl) {
+    public List<Stock> getStockList() {
+        String requestSaveUrl = fastApiConfig.getFastApiAppUrl() + "/stock/save-data";
         ResponseEntity<StockDataSaveRequestForm> response = restTemplate.getForEntity(requestSaveUrl, StockDataSaveRequestForm.class);
 
         log.info("response" + response);
@@ -106,7 +109,7 @@ public class StockServiceImpl implements StockService{
 
     @Override
     public void getOpinionTest() {
-        String requestSaveUrl = "http://localhost:8000/opinion-mining/";
+        String requestSaveUrl = fastApiConfig.getFastApiAppUrl() + "/opinion-mining/";
         ResponseEntity<OpinionDataSaveRequestForm> response = restTemplate.getForEntity(requestSaveUrl + 950210, OpinionDataSaveRequestForm.class);
 
         Optional<Stock> maybeStock = stockRepository.findByTicker("950210");
@@ -132,7 +135,7 @@ public class StockServiceImpl implements StockService{
 
     @Override
     public void getOCVAData() {
-        String requestSaveUrl = "http://localhost:8000/stock/list/";
+        String requestSaveUrl = fastApiConfig.getFastApiAppUrl() + "/stock/list/";
 
         // ResponseEntity의 타입을 'List<StockOCVASaveRequest>'로 변경하십시오.
         ResponseEntity<List<StockOCVASaveRequestForm>> responseForm = restTemplate.exchange(requestSaveUrl + "시가/False",

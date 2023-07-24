@@ -7,9 +7,9 @@ import kr.eddi.demo.domain.stock.entity.Stock;
 import java.util.List;
 
 public interface StockService {
-    void save(String requestSaveUrl);
+    void save();
 
-    List<Stock> getStockList(String requestSaveUrl);
+    List<Stock> getStockList();
 
     StockNameResponseForm getStockName(String ticker);
 
