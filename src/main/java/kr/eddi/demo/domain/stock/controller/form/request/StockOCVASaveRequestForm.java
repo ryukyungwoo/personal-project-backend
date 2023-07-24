@@ -13,10 +13,10 @@ public class StockOCVASaveRequestForm {
     private String ticker;
 
     @JsonProperty("시가")
-    private String open;
+    private Long open;
 
     @JsonProperty("종가")
-    private String close;
+    private Long close;
 
     @JsonProperty("변동폭")
     private Float rangeValue;
@@ -25,10 +25,10 @@ public class StockOCVASaveRequestForm {
     private Float fluctuationRate;
 
     @JsonProperty("거래량")
-    private String volume;
+    private Long volume;
 
     @JsonProperty("거래대금")
-    private String amount;
+    private Long amount;
 
     public StockOCVASaveRequest toStockOCVASaveRequest(){
         return new StockOCVASaveRequest(ticker, open, close, rangeValue, fluctuationRate, volume, amount);

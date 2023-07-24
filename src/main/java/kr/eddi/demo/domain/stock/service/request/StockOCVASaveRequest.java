@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class StockOCVASaveRequest {
     private String ticker;
-    private String open;
-    private String close;
+    private Long open;
+    private Long close;
     private Float rangeValue;
     private Float fluctuationRate;
-    private String volume;
-    private String amount;
+    private Long volume;
+    private Long amount;
 
     public StockOCVA toStockOCVA () {
 

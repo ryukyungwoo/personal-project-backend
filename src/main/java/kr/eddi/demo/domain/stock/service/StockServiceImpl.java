@@ -133,13 +133,11 @@ public class StockServiceImpl implements StockService{
     public void getOCVAData() {
         String requestSaveUrl = fastApiConfig.getFastApiAppUrl() + "/stock/list/";
 
-        // ResponseEntity의 타입을 'List<StockOCVASaveRequest>'로 변경하십시오.
         ResponseEntity<List<StockOCVASaveRequestForm>> responseForm = restTemplate.exchange(requestSaveUrl + "시가/False",
                 HttpMethod.GET, null, new ParameterizedTypeReference<List<StockOCVASaveRequestForm>>() {});
 
         List<StockOCVASaveRequestForm> stockForms = responseForm.getBody();
 
-        // 리스트를 반복 처리하십시오.
         for (StockOCVASaveRequestForm stockForm : stockForms) {
             StockOCVA receivedStockOCVA = stockForm.toStockOCVASaveRequest().toStockOCVA();
             String stockName = stockRepository.findByTicker(receivedStockOCVA.getTicker()).get().getStockName();

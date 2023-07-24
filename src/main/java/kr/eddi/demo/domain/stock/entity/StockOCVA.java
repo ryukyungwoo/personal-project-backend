@@ -18,14 +18,14 @@ public class StockOCVA {
     @Column(unique=true)
     private String ticker;
     private String stockName;
-    private String open;
-    private String close;
+    private Long open;
+    private Long close;
     private Float rangeValue;
     private Float fluctuationRate;
-    private String volume;
-    private String amount;
+    private Long volume;
+    private Long amount;
 
-    public StockOCVA(String ticker, String open, String close, Float rangeValue, Float fluctuationRate, String volume, String amount) {
+    public StockOCVA(String ticker, Long open, Long close, Float rangeValue, Float fluctuationRate, Long volume, Long amount) {
         this.ticker = ticker;
         this.open = open;
         this.close = close;
