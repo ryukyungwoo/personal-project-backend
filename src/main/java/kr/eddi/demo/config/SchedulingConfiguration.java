@@ -11,8 +11,8 @@ public class SchedulingConfiguration {
     @Bean
     public ThreadPoolTaskScheduler taskScheduler() {
         ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
-        taskScheduler.setPoolSize(5); // 스레드 풀 크기 설정
-        taskScheduler.setThreadNamePrefix("scheduled-task-"); // 스레드 이름 접두사 설정
+        taskScheduler.setPoolSize(5);
+        taskScheduler.setThreadNamePrefix("scheduled-task-");
         return taskScheduler;
     }
 }
