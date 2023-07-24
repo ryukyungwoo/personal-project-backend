@@ -33,11 +33,11 @@ public class StockController {
     }
     @GetMapping("/opinion-mining")
     public void requestStockOpinion (){
-        stockService.getOpinionTest();
+        stockService.saveOpinion();
     }
     @GetMapping("/save-OCVA-data")
     public void saveOHCLVAData () {
-        stockService.getOCVAData();
+        stockService.saveOCVAData();
     }
     @GetMapping("/list/{OCVA}/{ascending}/{pageNumber}")
     public List<StockOCVAResponseForm> stockListResponse (@PathVariable("OCVA") String OCVA,

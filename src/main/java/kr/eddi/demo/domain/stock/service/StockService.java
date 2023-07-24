@@ -14,9 +14,9 @@ public interface StockService {
 
     StockNameResponseForm getStockName(String ticker);
 
-    void getOpinionTest();
+    void saveOpinion();
 
-    void getOCVAData();
+    void saveOCVAData();
 
     List<StockOCVAResponseForm> list(String OCVA, String ascending, int pageNumber);
 
