@@ -6,6 +6,7 @@ import kr.eddi.demo.domain.stock.controller.form.request.StockDataSaveRequestFor
 import kr.eddi.demo.domain.stock.controller.form.request.StockOCVASaveRequestForm;
 import kr.eddi.demo.domain.stock.controller.form.response.StockNameResponseForm;
 import kr.eddi.demo.domain.stock.controller.form.response.StockOCVAResponseForm;
+import kr.eddi.demo.domain.stock.controller.form.response.StockOpinionResponseForm;
 import kr.eddi.demo.domain.stock.entity.Stock;
 import kr.eddi.demo.domain.stock.entity.StockOCVA;
 import kr.eddi.demo.domain.stock.entity.StockOpinion;
@@ -186,6 +187,35 @@ public class StockServiceImpl implements StockService{
             OCVAList.add(responseForm);
         }
         return OCVAList;
+    }
+
+    @Override
+    public List<StockOpinionResponseForm> opinionList(String sortItem, String ascending, int pageNumber) {
+        final int PAGE_SIZE = 30;
+        Sort sort;
+        if ("asc".equals(ascending)){
+            sort = Sort.by(Sort.Order.asc(sortItem));
+        } else {
+            sort = Sort.by(Sort.Order.desc(sortItem));
+        }
+        Pageable pageable = PageRequest.of(pageNumber, PAGE_SIZE, sort);
+        Page<StockOpinion> stockOpinionPage = stockOpinionRepository.findAll(pageable);
+
+        List<StockOpinionResponseForm> opinionList = new ArrayList<>();
+
+        for (StockOpinion stockOpinion : stockOpinionPage.getContent()) {
+            Stock stock = stockRepository.findByTicker(stockOpinion.getId()).get();
+            StockOpinionResponseForm responseForm = new StockOpinionResponseForm().builder()
+                    .ticker(stock.getTicker())
+                    .stockName(stock.getStockName())
+                    .positiveCount(stockOpinion.getPositiveCount())
+                    .negativeCount(stockOpinion.getNegativeCount())
+                    .naturalCount(stockOpinion.getNaturalCount())
+                    .totalSentimentScore(stockOpinion.getTotalSentimentScore())
+                    .build();
+            opinionList.add(responseForm);
+        }
+        return opinionList;
     }
 
 }
