@@ -26,9 +26,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -44,27 +42,58 @@ public class StockServiceImpl implements StockService{
 
     @Override
     public void save() {
-        String requestSaveUrl = fastApiConfig.getFastApiAppUrl() + "/stock/save-data";
-        ResponseEntity<StockDataSaveRequestForm> response = restTemplate.getForEntity(requestSaveUrl, StockDataSaveRequestForm.class);
+        try {
+            Optional<Stock> findHomepageStock = stockRepository.findByTicker("1");
+            if (findHomepageStock.isPresent()) {
+                return;
+            } else {
+                stockRepository.save(new Stock("1", "HomePage"));
+            }
+            String requestSaveUrl = fastApiConfig.getFastApiAppUrl() + "/stock/save-data";
+            ResponseEntity<StockDataSaveRequestForm> response = restTemplate.getForEntity(requestSaveUrl, StockDataSaveRequestForm.class);
 
-        log.info("response" + response);
+            log.info("response" + response);
 
-        List<String> tickerList = response.getBody().getTicker();
-        List<String> nameList = response.getBody().getStockName();
+            List<String> tickerList = response.getBody().getTicker();
+            List<String> nameList = response.getBody().getStockName();
 
-        if (tickerList.size() != nameList.size()) {
-            log.info("티커와 이름의 길이가 다릅니다");
+            if (tickerList.size() != nameList.size()) {
+                log.info("티커와 이름의 길이가 다릅니다");
+            }
+
+            List<Stock> newStockList = new ArrayList<>();
+            for (int i = 0; i < tickerList.size(); i++) {
+                Stock stock = new Stock(tickerList.get(i), nameList.get(i));
+                newStockList.add(stock);
+            }
+
+            List<Stock> existingStockList = stockRepository.findAll();
+
+            Set<Stock> stockToSave = new HashSet<>();
+
+            for (Stock newStock : newStockList) {
+                boolean exists = false;
+                for (Stock existingStock : existingStockList) {
+                    if (Objects.equals(existingStock.getTicker(), newStock.getTicker())) {
+                        exists = true;
+                        break;
+                    }
+                }
+
+                if (!exists) {
+                    stockToSave.add(newStock);
+                }
+            }
+
+            if (!stockToSave.isEmpty()) {
+                stockRepository.saveAll(stockToSave);
+            }
+
+        } catch (Exception e) {
+            log.error("Error during stock initialization or save", e);
         }
-
-        List<Stock> stockList = new ArrayList<>();
-
-        for (int i = 0; i < tickerList.size(); i++) {
-            Stock stock = new Stock(tickerList.get(i), nameList.get(i));
-            stockList.add(stock);
-        }
-
-        stockRepository.saveAll(stockList);
     }
+
 
     @Override
     public List<Stock> getStockList() {
@@ -109,7 +138,7 @@ public class StockServiceImpl implements StockService{
     }
 
     @Override
-    public void getOpinionTest() {
+    public void saveOpinion() {
         String requestSaveUrl = fastApiConfig.getFastApiAppUrl() + "/opinion-mining/";
         List<Stock> stockList = stockRepository.findAll();
         for (Stock stock : stockList) {
@@ -131,7 +160,7 @@ public class StockServiceImpl implements StockService{
     }
 
     @Override
-    public void getOCVAData() {
+    public void saveOCVAData() {
         String requestSaveUrl = fastApiConfig.getFastApiAppUrl() + "/stock/list/";
 
         ResponseEntity<List<StockOCVASaveRequestForm>> responseForm = restTemplate.exchange(requestSaveUrl + "시가/False",

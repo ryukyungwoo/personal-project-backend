@@ -22,22 +22,9 @@ import java.util.List;
 @RequestMapping("/stock")
 public class StockController {
     final private StockService stockService;
-
-    @GetMapping("/save-data")
-    public void saveStockData ( ) {
-        stockService.save();
-    }
     @GetMapping("/name/{ticker}")
     public StockNameResponseForm responseStockName (@PathVariable("ticker") String ticker) {
        return stockService.getStockName(ticker);
-    }
-    @GetMapping("/opinion-mining")
-    public void requestStockOpinion (){
-        stockService.saveOpinion();
-    }
-    @GetMapping("/save-OCVA-data")
-    public void saveOHCLVAData () {
-        stockService.saveOCVAData();
     }
     @GetMapping("/list/{OCVA}/{ascending}/{pageNumber}")
     public List<StockOCVAResponseForm> stockListResponse (@PathVariable("OCVA") String OCVA,
