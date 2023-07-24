@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StockOCVAResponseForm {
+    private String ticker;
+
     private String stockName;
     private String open;
     private String close;

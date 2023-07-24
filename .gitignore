@@ -39,4 +39,4 @@ out/
 ### 보안 설정 ###
 github.properties
 redis.properties
-application.yaml
+*.yaml

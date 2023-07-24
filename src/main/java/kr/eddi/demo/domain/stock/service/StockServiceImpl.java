@@ -110,27 +110,23 @@ public class StockServiceImpl implements StockService{
     @Override
     public void getOpinionTest() {
         String requestSaveUrl = fastApiConfig.getFastApiAppUrl() + "/opinion-mining/";
-        ResponseEntity<OpinionDataSaveRequestForm> response = restTemplate.getForEntity(requestSaveUrl + 950210, OpinionDataSaveRequestForm.class);
+        List<Stock> stockList = stockRepository.findAll();
+        for (Stock stock : stockList) {
+            ResponseEntity<OpinionDataSaveRequestForm> response = restTemplate.getForEntity(requestSaveUrl + stock.getTicker(), OpinionDataSaveRequestForm.class);
 
-        Optional<Stock> maybeStock = stockRepository.findByTicker("950210");
+            StockOpinion receivedStockOpinion = response.getBody().toOpinionDataSaveRequest().toStockOpinionMining();
 
-        if (maybeStock.isEmpty()) {
-            log.info("잘못된 ticker 이거나 없는 주식입니다");
+            StockOpinion stockOpinion = new StockOpinion().builder()
+                    .totalSentimentScore(receivedStockOpinion.getTotalSentimentScore())
+                    .positiveCount(receivedStockOpinion.getPositiveCount())
+                    .negativeCount(receivedStockOpinion.getNegativeCount())
+                    .naturalCount(receivedStockOpinion.getNaturalCount())
+                    .build();
+
+            stockOpinion.setStock(stock);
+            stockOpinion.setId(stock.getTicker());
+            stockOpinionRepository.save(stockOpinion);
         }
-
-        Stock stock = maybeStock.get();
-        StockOpinion receivedStockOpinion = response.getBody().toOpinionDataSaveRequest().toStockOpinionMining();
-
-        StockOpinion stockOpinion = new StockOpinion().builder()
-                                        .totalSentimentScore(receivedStockOpinion.getTotalSentimentScore())
-                                        .positiveCount(receivedStockOpinion.getPositiveCount())
-                                        .negativeCount(receivedStockOpinion.getNegativeCount())
-                                        .naturalCount(receivedStockOpinion.getNaturalCount())
-                                        .build();
-
-        stockOpinion.setStock(stock);
-        stockOpinion.setId(stock.getTicker());
-        stockOpinionRepository.save(stockOpinion);
     }
 
     @Override
@@ -180,6 +176,7 @@ public class StockServiceImpl implements StockService{
 
         for (StockOCVA stockOCVA : stockOCVAPage.getContent()) {
             StockOCVAResponseForm responseForm = new StockOCVAResponseForm().builder()
+                    .ticker(stockOCVA.getTicker())
                     .stockName(stockOCVA.getStockName())
                     .open(stockOCVA.getOpen())
                     .close(stockOCVA.getClose())
