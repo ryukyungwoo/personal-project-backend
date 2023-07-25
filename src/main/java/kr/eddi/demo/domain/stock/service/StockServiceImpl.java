@@ -94,34 +94,6 @@ public class StockServiceImpl implements StockService{
         }
     }
 
-
-    @Override
-    public List<Stock> getStockList() {
-        String requestSaveUrl = fastApiConfig.getFastApiAppUrl() + "/stock/save-data";
-        ResponseEntity<StockDataSaveRequestForm> response = restTemplate.getForEntity(requestSaveUrl, StockDataSaveRequestForm.class);
-
-        log.info("response" + response);
-
-        List<String> tickerList = response.getBody().getTicker();
-        List<String> nameList = response.getBody().getStockName();
-
-        if (tickerList.size() != nameList.size()) {
-            log.info("티커와 이름의 길이가 다릅니다");
-            throw new IllegalArgumentException("Ticker and name lists have different sizes.");
-        }
-
-        List<Stock> stockList = new ArrayList<>();
-
-        for (int i = 0; i < tickerList.size(); i++) {
-            Stock stock = new Stock();
-            stock.setTicker(tickerList.get(i));
-            stock.setStockName(nameList.get(i));
-            stockList.add(stock);
-        }
-
-        return stockList;
-    }
-
     @Override
     public StockNameResponseForm getStockName(String ticker) {
         Optional<Stock> maybeStock = stockRepository.findByTicker(ticker);
@@ -139,51 +111,60 @@ public class StockServiceImpl implements StockService{
 
     @Override
     public void saveOpinion() {
-        String requestSaveUrl = fastApiConfig.getFastApiAppUrl() + "/opinion-mining/";
-        List<Stock> stockList = stockRepository.findAll();
-        for (Stock stock : stockList) {
-            ResponseEntity<OpinionDataSaveRequestForm> response = restTemplate.getForEntity(requestSaveUrl + stock.getTicker(), OpinionDataSaveRequestForm.class);
+        try {
+            String requestSaveUrl = fastApiConfig.getFastApiAppUrl() + "/opinion-mining/";
+            List<Stock> stockList = stockRepository.findAll();
+            for (Stock stock : stockList) {
+                ResponseEntity<OpinionDataSaveRequestForm> response = restTemplate.getForEntity(requestSaveUrl + stock.getTicker(), OpinionDataSaveRequestForm.class);
 
-            StockOpinion receivedStockOpinion = response.getBody().toOpinionDataSaveRequest().toStockOpinionMining();
+                StockOpinion receivedStockOpinion = response.getBody().toOpinionDataSaveRequest().toStockOpinionMining();
 
-            StockOpinion stockOpinion = new StockOpinion().builder()
-                    .totalSentimentScore(receivedStockOpinion.getTotalSentimentScore())
-                    .positiveCount(receivedStockOpinion.getPositiveCount())
-                    .negativeCount(receivedStockOpinion.getNegativeCount())
-                    .naturalCount(receivedStockOpinion.getNaturalCount())
-                    .build();
+                StockOpinion stockOpinion = new StockOpinion().builder()
+                        .totalSentimentScore(receivedStockOpinion.getTotalSentimentScore())
+                        .positiveCount(receivedStockOpinion.getPositiveCount())
+                        .negativeCount(receivedStockOpinion.getNegativeCount())
+                        .naturalCount(receivedStockOpinion.getNaturalCount())
+                        .build();
 
-            stockOpinion.setStock(stock);
-            stockOpinion.setId(stock.getTicker());
-            stockOpinionRepository.save(stockOpinion);
+                stockOpinion.setStock(stock);
+                stockOpinion.setId(stock.getTicker());
+                stockOpinionRepository.save(stockOpinion);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
+
     @Override
     public void saveOCVAData() {
-        String requestSaveUrl = fastApiConfig.getFastApiAppUrl() + "/stock/list/";
+        try {
+            String requestSaveUrl = fastApiConfig.getFastApiAppUrl() + "/stock/list/";
 
-        ResponseEntity<List<StockOCVASaveRequestForm>> responseForm = restTemplate.exchange(requestSaveUrl + "시가/False",
-                HttpMethod.GET, null, new ParameterizedTypeReference<List<StockOCVASaveRequestForm>>() {});
+            ResponseEntity<List<StockOCVASaveRequestForm>> responseForm = restTemplate.exchange(requestSaveUrl + "시가/False",
+                    HttpMethod.GET, null, new ParameterizedTypeReference<List<StockOCVASaveRequestForm>>() {});
 
-        List<StockOCVASaveRequestForm> stockForms = responseForm.getBody();
+            List<StockOCVASaveRequestForm> stockForms = responseForm.getBody();
 
-        for (StockOCVASaveRequestForm stockForm : stockForms) {
-            StockOCVA receivedStockOCVA = stockForm.toStockOCVASaveRequest().toStockOCVA();
-            String stockName = stockRepository.findByTicker(receivedStockOCVA.getTicker()).get().getStockName();
+            for (StockOCVASaveRequestForm stockForm : stockForms) {
+                StockOCVA receivedStockOCVA = stockForm.toStockOCVASaveRequest().toStockOCVA();
+                String stockName = stockRepository.findByTicker(receivedStockOCVA.getTicker()).get().getStockName();
 
-            StockOCVA stockOCVA = new StockOCVA().builder()
-                    .ticker(receivedStockOCVA.getTicker())
-                    .stockName(stockName)
-                    .open(receivedStockOCVA.getOpen())
-                    .close(receivedStockOCVA.getClose())
-                    .rangeValue(receivedStockOCVA.getRangeValue())
-                    .fluctuationRate(receivedStockOCVA.getFluctuationRate())
-                    .amount(receivedStockOCVA.getAmount())
-                    .volume(receivedStockOCVA.getVolume())
-                    .build();
+                StockOCVA stockOCVA = new StockOCVA().builder()
+                        .ticker(receivedStockOCVA.getTicker())
+                        .stockName(stockName)
+                        .open(receivedStockOCVA.getOpen())
+                        .close(receivedStockOCVA.getClose())
+                        .rangeValue(receivedStockOCVA.getRangeValue())
+                        .fluctuationRate(receivedStockOCVA.getFluctuationRate())
+                        .amount(receivedStockOCVA.getAmount())
+                        .volume(receivedStockOCVA.getVolume())
+                        .build();
 
-            stockOCVARepository.save(stockOCVA);
+                stockOCVARepository.save(stockOCVA);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
