@@ -3,18 +3,17 @@ package kr.eddi.demo.domain.account.service;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import kr.eddi.demo.config.EncoderConfig;
 import kr.eddi.demo.domain.account.controller.form.AccountLoginRequestForm;
 import kr.eddi.demo.domain.account.controller.form.AccountRegisterRequestFrom;
 import kr.eddi.demo.domain.account.entity.Account;
 import kr.eddi.demo.domain.account.repository.AccountRepository;
-import kr.eddi.demo.domain.account.service.request.AccountLogOutRequest;
 import kr.eddi.demo.domain.account.service.request.AccountLoginRequest;
 import kr.eddi.demo.domain.account.service.request.AccountRegisterRequest;
 import kr.eddi.demo.util.jwt.JwtUtils;
 import kr.eddi.demo.util.redis.RedisService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -28,11 +27,11 @@ public class AccountServiceImpl implements AccountService{
     final private JwtUtils jwtUtils;
     final private AccountRepository accountRepository;
     final private RedisService redisService;
-    final private BCryptPasswordEncoder passwordEncoder;
+    final private EncoderConfig encoderConfig;
     @Override
     public boolean register(AccountRegisterRequestFrom requestFrom) {
         AccountRegisterRequest request = requestFrom.toAccountRegisterRequest();
-        String encodedPassword = passwordEncoder.encode(request.getPassword());
+        String encodedPassword = encoderConfig.passwordEncoder().encode(request.getPassword());
         Account account = new Account().builder()
                 .email(request.getEmail())
                 .password(encodedPassword)
@@ -54,7 +53,7 @@ public class AccountServiceImpl implements AccountService{
 
         Account account = maybeAccount.get();
 
-        if(!passwordEncoder.matches(request.getPassword(), maybeAccount.get().getPassword())){
+        if(!encoderConfig.passwordEncoder().matches(request.getPassword(), maybeAccount.get().getPassword())){
             log.info("비밀번호가 잘못되었습니다.");
             return false;
         }
@@ -112,5 +111,20 @@ public class AccountServiceImpl implements AccountService{
             }
         }
 
+    }
+
+    @Override
+    public Account findLoginUserByEmail(String email) {
+        Optional<Account> maybeAccount = accountRepository.findByEmail(email);
+        if (maybeAccount.isEmpty()){
+            return null;
+        }
+        return maybeAccount.get();
+
+    }
+
+    @Override
+    public Optional<Account> findUserByAccountId(Long accountId) {
+        return accountRepository.findById(accountId);
     }
 }

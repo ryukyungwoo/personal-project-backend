@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 @Component
 @Getter
-public class JwtSecretKey {
+public class JwtSecretKeyConfig {
         @Value("${spring.jwt.secretKey}")
         private String secretKey;
 

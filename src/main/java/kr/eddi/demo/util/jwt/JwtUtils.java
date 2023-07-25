@@ -1,10 +1,11 @@
 package kr.eddi.demo.util.jwt;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.Cookie;
-import kr.eddi.demo.config.JwtSecretKey;
+import kr.eddi.demo.config.JwtSecretKeyConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -15,7 +16,7 @@ import java.util.Date;
 @Slf4j
 @RequiredArgsConstructor
 public class JwtUtils {
-    final private JwtSecretKey jwtSecretKey;
+    final private JwtSecretKeyConfig jwtSecretKey;
     public String generateToken(String email, long expiryDate) {
 
         String token = Jwts.builder()
@@ -54,5 +55,17 @@ public class JwtUtils {
     }
     public String getEmail(String token) {
         return extractClaims(token).getSubject();
+    }
+    public boolean isExpired(String token) {
+        try {
+            Date expirationTime = Jwts.parser()
+                    .setSigningKey(jwtSecretKey.getSecretKey())
+                    .parseClaimsJws(token)
+                    .getBody().getExpiration();
+
+            return expirationTime.before(new Date());
+        } catch (JwtException e) {
+            return true;
+        }
     }
 }
