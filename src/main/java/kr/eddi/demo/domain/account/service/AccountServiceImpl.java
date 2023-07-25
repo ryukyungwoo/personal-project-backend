@@ -1,6 +1,7 @@
 package kr.eddi.demo.domain.account.service;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.eddi.demo.domain.account.controller.form.AccountLoginRequestForm;
 import kr.eddi.demo.domain.account.controller.form.AccountRegisterRequestFrom;
@@ -84,9 +85,32 @@ public class AccountServiceImpl implements AccountService{
         }
 
     @Override
-    public void signOut(AccountLogOutRequest request) {
+    public void signOut(HttpServletRequest request, HttpServletResponse response) {
 
-        redisService.deleteByKey(request.getUserToken());
+        Cookie[] cookies = request.getCookies();
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("AccessToken")) {
+
+                    String accessToken = cookie.getValue();
+                    System.out.println("클라이언트에서 가져온 accessToken: " + accessToken);
+
+                    Cookie assessCookie = jwtUtils.generateCookie("AccessToken", null, 0, false);
+
+                    response.addCookie(assessCookie);
+                }
+                if(cookie.getName().equals("RefreshToken")) {
+                    String refreshToken = cookie.getValue();
+                    System.out.println("클라이언트에서 가져온 refreshToken: " + refreshToken);
+
+                    Cookie refreshCookie = jwtUtils.generateCookie("RefreshToken", null, 0, true);
+                    response.addCookie(refreshCookie);
+
+                    redisService.deleteByKey(refreshToken);
+                }
+            }
+        }
 
     }
 }

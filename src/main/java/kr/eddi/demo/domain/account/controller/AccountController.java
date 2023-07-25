@@ -1,5 +1,6 @@
 package kr.eddi.demo.domain.account.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.eddi.demo.domain.account.controller.form.AccountLogOutRequestForm;
 import kr.eddi.demo.domain.account.controller.form.AccountLoginRequestForm;
@@ -29,8 +30,7 @@ public class AccountController {
         return accountService.signIn(requestForm, response);
     }
     @PostMapping("/sign-out")
-    public void accountSignOut (@RequestBody AccountLogOutRequestForm requestForm) {
-        log.info("로그아웃" + requestForm);
-        accountService.signOut(requestForm.toAccountLogOutRequest());
+    public void accountSignOut (HttpServletRequest request, HttpServletResponse response) {
+        accountService.signOut(request, response);
     }
 }

@@ -1,5 +1,6 @@
 package kr.eddi.demo.domain.account.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.eddi.demo.domain.account.controller.form.AccountLoginRequestForm;
 import kr.eddi.demo.domain.account.controller.form.AccountRegisterRequestFrom;
@@ -12,5 +13,5 @@ public interface AccountService {
 
     Boolean signIn(AccountLoginRequestForm requestForm, HttpServletResponse response);
 
-    void signOut(AccountLogOutRequest request);
+    void signOut(HttpServletRequest request, HttpServletResponse response);
 }
