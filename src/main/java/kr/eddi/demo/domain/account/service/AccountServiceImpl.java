@@ -13,7 +13,6 @@ import kr.eddi.demo.util.jwt.JwtUtils;
 import kr.eddi.demo.util.redis.RedisService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -47,8 +46,6 @@ public class AccountServiceImpl implements AccountService{
         AccountLoginRequest request = requestForm.toAccountRequest();
         Optional<Account> maybeAccount = accountRepository.findByEmail(request.getEmail());
 
-        log.info(String.valueOf(maybeAccount));
-
         if(maybeAccount.isEmpty()){
             log.info("존재하지 않는 이메일 입니다.");
             return false;
@@ -69,18 +66,16 @@ public class AccountServiceImpl implements AccountService{
         String accessToken = jwtUtils.generateToken(account.getEmail(), ACCESS_TOKEN_EXPIRY_DATE);
         String refreshToken = jwtUtils.generateToken(refreshTokenUUID , REFRESH_TOKEN_EXPIRY_DATE);
 
-        System.out.println(accessToken);
-        System.out.println(refreshToken);
-
         redisService.setKeyAndValue(refreshToken, account.getId());
 
-        Cookie assessCookie = jwtUtils.generateCookie("AccessToken", accessToken,
-                ACCESS_TOKEN_EXPIRY_DATE, false);
-        Cookie refreshCookie = jwtUtils.generateCookie("RefreshToken", refreshToken,
-                REFRESH_TOKEN_EXPIRY_DATE, true);
+        final int ACCESS_COOKIE_EXPIRY_DATE = 60 * 60 * 6;
+        final int REFRESH_COOKIE_EXPIRY_DATE = 60 * 60 * 24 * 14;
 
-        System.out.println(assessCookie);
-        System.out.println(refreshCookie);
+
+        Cookie assessCookie = jwtUtils.generateCookie("AccessToken", accessToken,
+                ACCESS_COOKIE_EXPIRY_DATE, false);
+        Cookie refreshCookie = jwtUtils.generateCookie("RefreshToken", refreshToken,
+                REFRESH_COOKIE_EXPIRY_DATE, true);
 
         response.addCookie(assessCookie);
         response.addCookie(refreshCookie);
