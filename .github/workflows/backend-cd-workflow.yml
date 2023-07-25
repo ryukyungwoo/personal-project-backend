@@ -8,7 +8,7 @@ on:
 env:
   DOCKER_IMAGE: ghcr.io/${{ github.actor }}/personal-project-backend
   VERSION: ${{ github.sha }}
-  NAME: stalk-project-backend
+  NAME: personal-project-backend
   
 jobs:
   build:
@@ -30,7 +30,9 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
           
       - name: Create application.yaml for CD Deploy
         run: |
