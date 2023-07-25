@@ -31,6 +31,13 @@ jobs:
             ~/.gradle/caches
             ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-
+          
+      - name: Create application.yaml for CD Deploy
+        run: |
+          mkdir -p src/main/resources
+          pwd
+          echo "${{ secrets.APP_YML }}" > src/main/resources/application.yaml
+          cat src/main/resources/application.yaml            
 
       ## chmod gradlew
       - name: Grant execute permission for gradlew
