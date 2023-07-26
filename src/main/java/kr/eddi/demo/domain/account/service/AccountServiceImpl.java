@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -41,21 +42,21 @@ public class AccountServiceImpl implements AccountService{
     }
 
     @Override
-    public Boolean signIn(AccountLoginRequestForm requestForm, HttpServletResponse response) {
+    public Date signIn(AccountLoginRequestForm requestForm, HttpServletResponse response) {
 
         AccountLoginRequest request = requestForm.toAccountRequest();
         Optional<Account> maybeAccount = accountRepository.findByEmail(request.getEmail());
 
-        if(maybeAccount.isEmpty()){
+        if (maybeAccount.isEmpty()) {
             log.info("존재하지 않는 이메일 입니다.");
-            return false;
+            return null;
         }
 
         Account account = maybeAccount.get();
 
-        if(!encoderConfig.passwordEncoder().matches(request.getPassword(), maybeAccount.get().getPassword())){
+        if (!encoderConfig.passwordEncoder().matches(request.getPassword(), maybeAccount.get().getPassword())) {
             log.info("비밀번호가 잘못되었습니다.");
-            return false;
+            return null;
         }
 
         final int ACCESS_TOKEN_EXPIRY_DATE = 6 * 60 * 60 * 1000;
@@ -64,13 +65,12 @@ public class AccountServiceImpl implements AccountService{
         final String refreshTokenUUID = UUID.randomUUID().toString();
 
         String accessToken = jwtUtils.generateToken(account.getEmail(), ACCESS_TOKEN_EXPIRY_DATE);
-        String refreshToken = jwtUtils.generateToken(refreshTokenUUID , REFRESH_TOKEN_EXPIRY_DATE);
+        String refreshToken = jwtUtils.generateToken(refreshTokenUUID, REFRESH_TOKEN_EXPIRY_DATE);
 
         redisService.setKeyAndValue(refreshToken, account.getId());
 
         final int ACCESS_COOKIE_EXPIRY_DATE = 60 * 60 * 6;
         final int REFRESH_COOKIE_EXPIRY_DATE = 60 * 60 * 24 * 14;
-
 
         Cookie assessCookie = jwtUtils.generateCookie("AccessToken", accessToken,
                 ACCESS_COOKIE_EXPIRY_DATE, false);
@@ -80,8 +80,11 @@ public class AccountServiceImpl implements AccountService{
         response.addCookie(assessCookie);
         response.addCookie(refreshCookie);
 
-        return true;
-        }
+        // 로그인 성공 시 refreshTokenExpires 값을 계산하고 반환합니다.
+        long expiryTimeInMilliseconds = System.currentTimeMillis() + REFRESH_TOKEN_EXPIRY_DATE;
+        Date refreshTokenExpires = new Date(expiryTimeInMilliseconds);
+        return refreshTokenExpires;
+    }
 
     @Override
     public void signOut(HttpServletRequest request, HttpServletResponse response) {

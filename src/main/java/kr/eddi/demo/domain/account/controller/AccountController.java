@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Date;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -25,8 +28,8 @@ public class AccountController {
     }
 
     @PostMapping("/sign-in")
-    public Boolean accountSignIn (@RequestBody AccountLoginRequestForm requestForm,
-                                  HttpServletResponse response) {
+    public Date accountSignIn (@RequestBody AccountLoginRequestForm requestForm,
+                               HttpServletResponse response) {
         return accountService.signIn(requestForm, response);
     }
     @PostMapping("/sign-out")

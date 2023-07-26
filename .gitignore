@@ -40,3 +40,4 @@ out/
 github.properties
 redis.properties
 *.yaml
+src/main/resources/application.yaml

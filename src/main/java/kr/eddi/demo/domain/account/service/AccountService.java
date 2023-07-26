@@ -9,12 +9,13 @@ import kr.eddi.demo.domain.account.service.request.AccountLogOutRequest;
 import kr.eddi.demo.domain.account.service.request.AccountLoginRequest;
 import kr.eddi.demo.domain.account.service.request.AccountRegisterRequest;
 
+import java.util.Date;
 import java.util.Optional;
 
 public interface AccountService {
     boolean register(AccountRegisterRequestFrom requestFrom);
 
-    Boolean signIn(AccountLoginRequestForm requestForm, HttpServletResponse response);
+    Date signIn(AccountLoginRequestForm requestForm, HttpServletResponse response);
 
     void signOut(HttpServletRequest request, HttpServletResponse response);
 
