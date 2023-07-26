@@ -34,7 +34,7 @@ public class JwtFilter extends OncePerRequestFilter {
         Cookie[] cookies =  request.getCookies();
 
         if(cookies == null){
-            log.info("쿠키가 없습니다.");
+            log.info("No Cookies.");
             filterChain.doFilter(request, response);
             return;
         }
@@ -45,30 +45,30 @@ public class JwtFilter extends OncePerRequestFilter {
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals("AccessToken")) {
                 accessToken = cookie.getValue();
-                log.info("검증할 accessToken: " + accessToken);
+                log.info("income accessToken: " + accessToken);
                 break;
             }
         }
 
         if (accessToken == null) {
-            log.info("accessToken이 만료되었습니다.");
+            log.info("accessToken is expire.");
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("RefreshToken")) {
                     refreshToken = cookie.getValue();
-                    log.info("검증할 refreshToken: " + refreshToken);
+                    log.info("income refreshToken: " + refreshToken);
                     break;
                 }
             }
             if (refreshToken == null) {
-                log.info("refreshToken이 없습니다.");
+                log.info("refreshToken is null.");
                 return;
             }
             if (redisService.getValueByKey(refreshToken) == null) {
-                log.info("로그아웃된 토큰입니다.");
+                log.info("logouted token.");
                 return;
             }
             if (jwtUtils.isExpired(refreshToken)) {
-                log.info("refreshToken이 만료되었습니다.");
+                log.info("refreshToken is expire.");
                 return;
             }
 
@@ -89,18 +89,16 @@ public class JwtFilter extends OncePerRequestFilter {
 
             response.addCookie(newAccessTokenCookie);
 
-            log.info("accessToken 토큰 재발행: " + accessToken);
+            log.info("accessToken token remake : " + accessToken);
         }
 
         String email = jwtUtils.getEmail(accessToken);
 
         Account account = accountService.findLoginUserByEmail(email);
-        log.info("JwtFilter.account: " + account);
 
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(
                         account.getEmail(), null, null);
-        log.info("authenticationToken: " + authenticationToken);
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         filterChain.doFilter(request, response);

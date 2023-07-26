@@ -66,6 +66,7 @@ public class BoardServiceImpl implements BoardService{
                             .content(requestForm.getContent())
                             .stock(stock)
                             .build();
+
         boardRepository.save(board);
 
         return null;
