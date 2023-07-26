@@ -10,8 +10,6 @@ import java.util.List;
 public interface StockService {
     void save();
 
-    List<Stock> getStockList();
-
     StockNameResponseForm getStockName(String ticker);
 
     void saveOpinion();

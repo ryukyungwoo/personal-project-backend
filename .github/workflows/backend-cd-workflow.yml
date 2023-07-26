@@ -8,7 +8,7 @@ on:
 env:
   DOCKER_IMAGE: ghcr.io/${{ github.actor }}/personal-project-backend
   VERSION: ${{ github.sha }}
-  NAME: stalk-project-backend
+  NAME: personal-project-backend
   
 jobs:
   build:
@@ -30,7 +30,16 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+          
+      - name: Create application.yaml for CD Deploy
+        run: |
+          mkdir -p src/main/resources
+          pwd
+          echo "${{ secrets.APP_YML }}" > src/main/resources/application.yaml
+          cat src/main/resources/application.yaml            
 
       ## chmod gradlew
       - name: Grant execute permission for gradlew
@@ -72,7 +81,7 @@ jobs:
           script: |
             pwd
             ls -al
-            cd actions-runner
+            cd spring/actions-runner
             pwd
             if [[ "$(docker ps -q --filter ancestor=mysql:8.0)" ]]; then
               docker rm -f $(docker ps -qa --filter ancestor=mysql:8.0)
