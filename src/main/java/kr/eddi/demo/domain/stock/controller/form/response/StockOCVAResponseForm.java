@@ -19,4 +19,5 @@ public class StockOCVAResponseForm {
     private Float fluctuationRate;
     private Long volume;
     private Long amount;
+    private int totalPageNum;
 }

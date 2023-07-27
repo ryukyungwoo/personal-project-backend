@@ -180,6 +180,8 @@ public class StockServiceImpl implements StockService{
         Pageable pageable = PageRequest.of(PAGE_NUMBER, PAGE_SIZE, sort);
         Page<StockOCVA> stockOCVAPage = stockOCVARepository.findAll(pageable);
 
+        long totalElements = stockOCVARepository.count();
+
         List<StockOCVAResponseForm> OCVAList = new ArrayList<>();
 
         for (StockOCVA stockOCVA : stockOCVAPage.getContent()) {
@@ -192,6 +194,7 @@ public class StockServiceImpl implements StockService{
                     .fluctuationRate(stockOCVA.getFluctuationRate())
                     .volume(stockOCVA.getVolume())
                     .amount(stockOCVA.getAmount())
+                    .totalPageNum((int) Math.ceil((double) totalElements / PAGE_SIZE))
                     .build();
             OCVAList.add(responseForm);
         }
@@ -212,6 +215,8 @@ public class StockServiceImpl implements StockService{
         Pageable pageable = PageRequest.of(PAGE_NUMBER, PAGE_SIZE, sort);
         Page<StockOpinion> stockOpinionPage = stockOpinionRepository.findAll(pageable);
 
+        long totalElements = stockOpinionRepository.count();
+
         List<StockOpinionResponseForm> opinionList = new ArrayList<>();
 
         for (StockOpinion stockOpinion : stockOpinionPage.getContent()) {
@@ -223,6 +228,7 @@ public class StockServiceImpl implements StockService{
                     .negativeCount(stockOpinion.getNegativeCount())
                     .naturalCount(stockOpinion.getNaturalCount())
                     .totalSentimentScore(stockOpinion.getTotalSentimentScore())
+                    .totalPageNum((int) Math.ceil((double) totalElements / PAGE_SIZE))
                     .build();
             opinionList.add(responseForm);
         }

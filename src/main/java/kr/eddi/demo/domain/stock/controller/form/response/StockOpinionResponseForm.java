@@ -16,4 +16,5 @@ public class StockOpinionResponseForm {
     private int positiveCount;
     private int negativeCount;
     private int naturalCount;
+    private int totalPageNum;
 }
