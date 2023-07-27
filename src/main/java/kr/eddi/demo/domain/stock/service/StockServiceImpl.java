@@ -170,6 +170,7 @@ public class StockServiceImpl implements StockService{
 
     @Override
     public List<StockOCVAResponseForm> list(String OCVA, String ascending, int pageNumber) {
+        final int PAGE_NUMBER = pageNumber - 1;
         final int PAGE_SIZE = 30;
         Sort sort;
         if ("asc".equals(ascending)){
@@ -178,7 +179,7 @@ public class StockServiceImpl implements StockService{
             sort = Sort.by(Sort.Order.desc(OCVA));
         }
 
-        Pageable pageable = PageRequest.of(pageNumber, PAGE_SIZE, sort);
+        Pageable pageable = PageRequest.of(PAGE_NUMBER, PAGE_SIZE, sort);
         Page<StockOCVA> stockOCVAPage = stockOCVARepository.findAll(pageable);
 
         List<StockOCVAResponseForm> OCVAList = new ArrayList<>();
@@ -201,6 +202,8 @@ public class StockServiceImpl implements StockService{
 
     @Override
     public List<StockOpinionResponseForm> opinionList(String sortItem, String ascending, int pageNumber) {
+
+        final int PAGE_NUMBER = pageNumber - 1;
         final int PAGE_SIZE = 30;
         Sort sort;
         if ("asc".equals(ascending)){
@@ -208,7 +211,7 @@ public class StockServiceImpl implements StockService{
         } else {
             sort = Sort.by(Sort.Order.desc(sortItem));
         }
-        Pageable pageable = PageRequest.of(pageNumber, PAGE_SIZE, sort);
+        Pageable pageable = PageRequest.of(PAGE_NUMBER, PAGE_SIZE, sort);
         Page<StockOpinion> stockOpinionPage = stockOpinionRepository.findAll(pageable);
 
         List<StockOpinionResponseForm> opinionList = new ArrayList<>();
