@@ -95,6 +95,7 @@ public class StockServiceImpl implements StockService{
     @Override
     public StockNameResponseForm getStockName(String ticker) {
         Optional<Stock> maybeStock = stockRepository.findByTicker(ticker);
+
         if(maybeStock.isEmpty()) {
             log.info("잘못된 ticker 이거나 없는 주식 입니다");
             return null;
@@ -113,6 +114,9 @@ public class StockServiceImpl implements StockService{
             String requestSaveUrl = fastApiConfig.getFastApiAppUrl() + "/opinion-mining/";
             List<Stock> stockList = stockRepository.findAll();
             for (Stock stock : stockList) {
+                if ("1".equals(stock.getTicker())) {
+                    continue;
+                }
                 ResponseEntity<OpinionDataSaveRequestForm> response = restTemplate.getForEntity(requestSaveUrl + stock.getTicker(), OpinionDataSaveRequestForm.class);
 
                 StockOpinion receivedStockOpinion = response.getBody().toOpinionDataSaveRequest().toStockOpinionMining();
@@ -145,6 +149,7 @@ public class StockServiceImpl implements StockService{
             List<StockOCVASaveRequestForm> stockForms = responseForm.getBody();
 
             for (StockOCVASaveRequestForm stockForm : stockForms) {
+
                 StockOCVA receivedStockOCVA = stockForm.toStockOCVASaveRequest().toStockOCVA();
                 String stockName = stockRepository.findByTicker(receivedStockOCVA.getTicker()).get().getStockName();
 
