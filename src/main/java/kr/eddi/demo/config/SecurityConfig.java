@@ -32,9 +32,6 @@ public class SecurityConfig {
                 .and()
                 .addFilterBefore(new JwtFilter(accountService, redisService, jwtUtils), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .requestMatchers(HttpMethod.POST, "/api/v1/**").authenticated()
-                .requestMatchers(HttpMethod.PUT, "/api/v1/**").authenticated()
-                .requestMatchers(HttpMethod.DELETE, "/api/v1/**").authenticated()
                 .anyRequest().permitAll()
                 .and().build();
     }
