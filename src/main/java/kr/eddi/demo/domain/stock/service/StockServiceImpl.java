@@ -44,9 +44,7 @@ public class StockServiceImpl implements StockService{
     public void save() {
         try {
             Optional<Stock> findHomepageStock = stockRepository.findByTicker("1");
-            if (findHomepageStock.isPresent()) {
-                return;
-            } else {
+            if (findHomepageStock.isEmpty()) {
                 stockRepository.save(new Stock("1", "HomePage"));
             }
             String requestSaveUrl = fastApiConfig.getFastApiAppUrl() + "/stock/save-data";
