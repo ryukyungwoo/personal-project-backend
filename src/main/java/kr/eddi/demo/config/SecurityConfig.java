@@ -21,13 +21,15 @@ public class SecurityConfig {
     final private AccountService accountService;
     final private RedisService redisService;
     final private JwtUtils jwtUtils;
+    final private CorsConfig corsConfig;
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .httpBasic().disable()
                 .csrf().disable()
-                .cors().and()
+                .cors().configurationSource(corsConfig.corsConfigurationSource()).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .addFilterBefore(new JwtFilter(accountService, redisService, jwtUtils), UsernamePasswordAuthenticationFilter.class)
