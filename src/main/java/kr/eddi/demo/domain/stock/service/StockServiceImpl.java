@@ -4,9 +4,7 @@ import kr.eddi.demo.config.FastApiConfig;
 import kr.eddi.demo.domain.stock.controller.form.request.OpinionDataSaveRequestForm;
 import kr.eddi.demo.domain.stock.controller.form.request.StockDataSaveRequestForm;
 import kr.eddi.demo.domain.stock.controller.form.request.StockOCVASaveRequestForm;
-import kr.eddi.demo.domain.stock.controller.form.response.StockNameResponseForm;
-import kr.eddi.demo.domain.stock.controller.form.response.StockOCVAResponseForm;
-import kr.eddi.demo.domain.stock.controller.form.response.StockOpinionResponseForm;
+import kr.eddi.demo.domain.stock.controller.form.response.*;
 import kr.eddi.demo.domain.stock.entity.Stock;
 import kr.eddi.demo.domain.stock.entity.StockOCVA;
 import kr.eddi.demo.domain.stock.entity.StockOpinion;
@@ -42,6 +40,7 @@ public class StockServiceImpl implements StockService{
 
     @Override
     public void save() {
+        log.info("save start");
         try {
             Optional<Stock> findHomepageStock = stockRepository.findByTicker("1");
             if (findHomepageStock.isEmpty()) {
@@ -50,7 +49,6 @@ public class StockServiceImpl implements StockService{
             String requestSaveUrl = fastApiConfig.getFastApiAppUrl() + "/stock/save-data";
             ResponseEntity<StockDataSaveRequestForm> response = restTemplate.getForEntity(requestSaveUrl, StockDataSaveRequestForm.class);
 
-            log.info("response" + response);
 
             List<String> tickerList = response.getBody().getTicker();
             List<String> nameList = response.getBody().getStockName();
@@ -90,10 +88,14 @@ public class StockServiceImpl implements StockService{
         } catch (Exception e) {
             log.error("Error during stock initialization or save", e);
         }
+        log.info("save end");
+
     }
 
     @Override
     public StockNameResponseForm getStockName(String ticker) {
+        log.info("getStockName start");
+
         Optional<Stock> maybeStock = stockRepository.findByTicker(ticker);
 
         if(maybeStock.isEmpty()) {
@@ -105,11 +107,15 @@ public class StockServiceImpl implements StockService{
                                                 .stockName(stock.getStockName())
                                                 .ticker(stock.getTicker())
                                                 .build();
+        log.info("getStockName end");
+
         return responseForm;
     }
 
     @Override
     public void saveOpinion() {
+        log.info("saveOpinion start");
+
         try {
             String requestSaveUrl = fastApiConfig.getFastApiAppUrl() + "/opinion-mining/";
             List<Stock> stockList = stockRepository.findAll();
@@ -135,11 +141,15 @@ public class StockServiceImpl implements StockService{
         } catch (Exception e) {
             e.printStackTrace();
         }
+        log.info("saveOpinion end");
+
     }
 
 
     @Override
     public void saveOCVAData() {
+        log.info("saveOCVAData start");
+
         try {
             String requestSaveUrl = fastApiConfig.getFastApiAppUrl() + "/stock/list/";
 
@@ -169,10 +179,14 @@ public class StockServiceImpl implements StockService{
         } catch (Exception e) {
             e.printStackTrace();
         }
+        log.info("saveOCVAData end");
+
     }
 
     @Override
     public List<StockOCVAResponseForm> list(String OCVA, String ascending, int pageNumber) {
+        log.info("list start");
+
         final int PAGE_NUMBER = pageNumber - 1;
         final int PAGE_SIZE = 30;
         Sort sort;
@@ -184,8 +198,6 @@ public class StockServiceImpl implements StockService{
 
         Pageable pageable = PageRequest.of(PAGE_NUMBER, PAGE_SIZE, sort);
         Page<StockOCVA> stockOCVAPage = stockOCVARepository.findAll(pageable);
-
-        long totalElements = stockOCVARepository.count();
 
         List<StockOCVAResponseForm> OCVAList = new ArrayList<>();
 
@@ -199,15 +211,18 @@ public class StockServiceImpl implements StockService{
                     .fluctuationRate(stockOCVA.getFluctuationRate())
                     .volume(stockOCVA.getVolume())
                     .amount(stockOCVA.getAmount())
-                    .totalPageNum((int) Math.ceil((double) totalElements / PAGE_SIZE))
                     .build();
             OCVAList.add(responseForm);
         }
+        log.info("list end");
+
         return OCVAList;
+
     }
 
     @Override
     public List<StockOpinionResponseForm> opinionList(String sortItem, String ascending, int pageNumber) {
+        log.info("opinionList start");
 
         final int PAGE_NUMBER = pageNumber - 1;
         final int PAGE_SIZE = 30;
@@ -220,7 +235,7 @@ public class StockServiceImpl implements StockService{
         Pageable pageable = PageRequest.of(PAGE_NUMBER, PAGE_SIZE, sort);
         Page<StockOpinion> stockOpinionPage = stockOpinionRepository.findAll(pageable);
 
-        long totalElements = stockOpinionRepository.count();
+//        long totalElements = stockOpinionRepository.count();
 
         List<StockOpinionResponseForm> opinionList = new ArrayList<>();
 
@@ -233,11 +248,37 @@ public class StockServiceImpl implements StockService{
                     .negativeCount(stockOpinion.getNegativeCount())
                     .naturalCount(stockOpinion.getNaturalCount())
                     .totalSentimentScore(stockOpinion.getTotalSentimentScore())
-                    .totalPageNum((int) Math.ceil((double) totalElements / PAGE_SIZE))
+//                    .totalPageNum((int) Math.ceil((double) totalElements / PAGE_SIZE))
                     .build();
             opinionList.add(responseForm);
         }
+        log.info("opinionList end");
+
         return opinionList;
+    }
+
+    @Override
+    public StockPageNumResponseForm stockPageNumResponse() {
+        log.info("stockPageNumResponse start");
+        final int PAGE_SIZE = 30;
+        long totalElements = stockOCVARepository.count();
+        StockPageNumResponseForm responseForm = new StockPageNumResponseForm();
+        responseForm.setPageNum((int) Math.ceil((double) totalElements / PAGE_SIZE));
+        log.info("stockPageNumResponse end");
+        return responseForm;
+
+    }
+
+    @Override
+    public OpinionPageNumResponseForm opinionPageNumResponse() {
+        log.info("opinionPageNumResponse start");
+        final int PAGE_SIZE = 30;
+        long totalElements = stockOpinionRepository.count();
+        OpinionPageNumResponseForm responseForm = new OpinionPageNumResponseForm();
+        responseForm.setPageNum((int) Math.ceil((double) totalElements / PAGE_SIZE));
+        log.info("opinionPageNumResponse start");
+
+        return responseForm;
     }
 
 }

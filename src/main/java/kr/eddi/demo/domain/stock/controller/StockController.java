@@ -1,8 +1,6 @@
 package kr.eddi.demo.domain.stock.controller;
 
-import kr.eddi.demo.domain.stock.controller.form.response.StockNameResponseForm;
-import kr.eddi.demo.domain.stock.controller.form.response.StockOCVAResponseForm;
-import kr.eddi.demo.domain.stock.controller.form.response.StockOpinionResponseForm;
+import kr.eddi.demo.domain.stock.controller.form.response.*;
 import kr.eddi.demo.domain.stock.entity.Stock;
 import kr.eddi.demo.domain.stock.service.StockService;
 import lombok.RequiredArgsConstructor;
@@ -38,5 +36,13 @@ public class StockController {
                                                                     @PathVariable("ascending") String ascending,
                                                                     @PathVariable("pageNumber") int pageNumber) {
         return stockService.opinionList(sortItem, ascending, pageNumber);
+    }
+    @GetMapping("/list")
+    public StockPageNumResponseForm stockPageNumResponse () {
+        return stockService.stockPageNumResponse();
+    }
+    @GetMapping("/opinion-list")
+    public OpinionPageNumResponseForm opinionPageNumResponse () {
+        return stockService.opinionPageNumResponse();
     }
 }
