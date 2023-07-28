@@ -9,6 +9,7 @@ import jakarta.websocket.server.ServerEndpoint;
 import kr.eddi.demo.config.ApplicationContextProvider;
 import kr.eddi.demo.domain.chat.service.ChatService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
@@ -17,6 +18,10 @@ import java.io.IOException;
 @Controller
 @Slf4j
 public class ChatController {
+    @Autowired
+    public ChatController(ChatService chatService) {
+        this.chatService = chatService;
+    }
     final private ChatService chatService;
     public ChatController() {
         this.chatService = ApplicationContextProvider.getApplicationContext().getBean(ChatService.class);

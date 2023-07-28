@@ -17,6 +17,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class ChatServiceImpl implements ChatService{
 
+
         final static private Map<String, Set<Session>> ROOMS = Collections.synchronizedMap(new HashMap<>());
         final private RedisService redisService;
 
