@@ -1,62 +1,45 @@
 version: "3.7"
 services:
-  # 첫 번째 구성요소: MySQL 데이터베이스
   db:
-    image: "mysql:8.0" # MySQL 8.0 이미지 사용
+    image: "mysql:8.0"
     container_name: mysql-container
     volumes:
-      - dbdata:/var/lib/mysql # MySQL 데이터용 로컬 볼륨 마운트
-      - ./docker/mysql/custom.cnf:/etc/mysql/conf.d/custom.cnf # MySQL 설정 파일
-      - ./docker/mysql/logs:/var/log/mysql # MySQL 로그 디렉터리
+      - dbdata:/var/lib/mysql
+      - ./docker/mysql/custom.cnf:/etc/mysql/conf.d/custom.cnf
+      - ./docker/mysql/logs:/var/log/mysql
     ports:
-      - "3306:3306" # 호스트 컴퓨터와 컨테이너 명시적 포트 표시
-    environment: # 환경 변수로 MySQL 설정
+      - "3306:3306"
+    environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
     networks:
-      - app # 'app' 네트워크 연결
-  # 두 번째 구성요소: 서버
+      - app
+
   server:
-    image: ghcr.io/ryukyungwoo/personal-project-backend:latest # 기본 이미지
-    build: . # 소스코드 위치
-    container_name: backend-deploy-test-server
+    image: ghcr.io/ryukyungwoo/personal-project-backend:latest
+    build: .
+    container_name: personal-project-backend-server
     volumes:
-      - appdata:/app # 응용 프로그램 데이터용 로컬 볼륨 마운트
+      - appdata:/app
     depends_on:
-      - db # db 서비스에 대한 종속성
+      - db
     ports:
-      - "7777:7777" # 호스트 컴퓨터와 컨테이너 명시적 포트 표시
+      - "7777:7777"
     command:
       - bash
       - -c
       - |
-        /wait-for-it.sh db:3306 -t 15 # 데이터베이스 연결 기다림
-        java -jar /app.jar # JAR 파일 실행
+        /wait-for-it.sh db:3306 -t 15
+        java -jar /app.jar
     networks:
-      - app # 'app' 네트워크 연결
+      - app
 
-# 커스텀 네트워크 정의
 networks:
   app:
     driver: bridge
 
-# 첫 번째 구성요소에 필요한 요소
-# 1. MySQL 이미지
-# 2. 데이터 저장을 위한 볼륨 마운트
-# 3. 설정 파일 및 로그 경로
-# 4. 포트 매핑
-# 5. 환경 변수로 MySQL 설정
-
-# 두 번째 구성요소에 필요한 요소
-# 1. 기본 이미지
-# 2. 애플리케이션 데이터를 저장하기 위한 볼륨
-# 3. db 서비스와의 종속 관계
-# 4. 포트 매핑
-# 5. 실행 명령어: 데이터베이스 연결을 대기하고 애플리케이션 실행
-
-# 볼륨 정의
 volumes:
   dbdata:
     driver: local
