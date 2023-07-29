@@ -129,7 +129,7 @@ public class ChatServiceImpl implements ChatService{
         if (ip.contains(".")) {
             // IPv4
             String[] parts = ip.split("\\.");
-            return String.join(".", Arrays.copyOfRange(parts, 0, 3));
+            return String.join(".", Arrays.copyOfRange(parts, 0, 2));
         } else {
             // IPv6
             String[] segments = ip.split(":");
