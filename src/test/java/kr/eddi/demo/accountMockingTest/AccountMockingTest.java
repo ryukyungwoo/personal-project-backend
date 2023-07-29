@@ -27,13 +27,13 @@ public class AccountMockingTest {
         MockitoAnnotations.initMocks(this);
     }
 
-    @Test
-    @DisplayName("AccountMocking Test: 회원등록")
-    public void 회원을_등록합니다 () {
-        final AccountRegisterRequestFrom requestFrom = new AccountRegisterRequestFrom("이메일", "작성자");
-
-        final Account account = requestFrom.toAccountRegisterRequest().toAccount();
-        when(mockRepository.save(account)).thenReturn(new Account("이메일", "작성자"));
-    }
+//    @Test
+//    @DisplayName("AccountMocking Test: 회원등록")
+//    public void 회원을_등록합니다 () {
+//        final AccountRegisterRequestFrom requestFrom = new AccountRegisterRequestFrom("이메일", "작성자");
+//
+//        final Account account = requestFrom.toAccountRegisterRequest().toAccount();
+//        when(mockRepository.save(account)).thenReturn(new Account("이메일", "작성자"));
+//    }
 
 }

@@ -19,9 +19,9 @@ public class Account {
 
     private String password;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @OneToOne(fetch = FetchType.LAZY)
     private AccountDetail accountDetail;
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @OneToOne(fetch = FetchType.LAZY)
     private AccountNickname accountNickname;
 
     @Builder

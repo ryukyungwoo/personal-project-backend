@@ -7,6 +7,7 @@ import jakarta.websocket.Session;
 import jakarta.websocket.server.PathParam;
 import jakarta.websocket.server.ServerEndpoint;
 import kr.eddi.demo.config.ApplicationContextProvider;
+import kr.eddi.demo.config.HttpSessionConfig;
 import kr.eddi.demo.domain.chat.service.ChatService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
 
-@ServerEndpoint(value = "/chat/{ticker}")
+@ServerEndpoint(value = "/chat/{ticker}", configurator = HttpSessionConfig.class)
 @Controller
 @Slf4j
 public class ChatController {
