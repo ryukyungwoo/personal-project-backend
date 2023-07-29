@@ -12,8 +12,12 @@ public class AccountRegisterRequestFrom {
     private String email;
 
     private String password;
+    private String nickname;
+    private String phoneNumber;
+    private String address;
 
     public AccountRegisterRequest toAccountRegisterRequest () {
-        return new AccountRegisterRequest(email, password);
+
+        return new AccountRegisterRequest(email, password, nickname, phoneNumber, address);
     }
 }

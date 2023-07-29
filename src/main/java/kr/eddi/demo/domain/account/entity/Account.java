@@ -2,10 +2,10 @@ package kr.eddi.demo.domain.account.entity;
 
 import jakarta.persistence.*;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Getter
+@Data
 @Entity
 @NoArgsConstructor
 public class Account {
@@ -18,6 +18,12 @@ public class Account {
     private String email;
 
     private String password;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    private AccountDetail accountDetail;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    private AccountNickname accountNickname;
+
     @Builder
     public Account(String email, String password) {
         this.email = email;

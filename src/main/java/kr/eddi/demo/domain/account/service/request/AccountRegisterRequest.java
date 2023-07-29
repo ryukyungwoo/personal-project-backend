@@ -9,8 +9,8 @@ import lombok.RequiredArgsConstructor;
 public class AccountRegisterRequest {
     final private String email;
     final private String password;
+    final private String nickname;
+    final private String phoneNumber;
+    final private String address;
 
-    public Account toAccount () {
-        return new Account(email, password);
-    }
 }

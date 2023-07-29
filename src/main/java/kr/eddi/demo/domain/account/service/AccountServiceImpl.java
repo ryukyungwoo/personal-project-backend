@@ -7,6 +7,10 @@ import kr.eddi.demo.config.EncoderConfig;
 import kr.eddi.demo.domain.account.controller.form.AccountLoginRequestForm;
 import kr.eddi.demo.domain.account.controller.form.AccountRegisterRequestFrom;
 import kr.eddi.demo.domain.account.entity.Account;
+import kr.eddi.demo.domain.account.entity.AccountDetail;
+import kr.eddi.demo.domain.account.entity.AccountNickname;
+import kr.eddi.demo.domain.account.repository.AccountDetailRepository;
+import kr.eddi.demo.domain.account.repository.AccountNicknameRepository;
 import kr.eddi.demo.domain.account.repository.AccountRepository;
 import kr.eddi.demo.domain.account.service.request.AccountLoginRequest;
 import kr.eddi.demo.domain.account.service.request.AccountRegisterRequest;
@@ -27,17 +31,40 @@ public class AccountServiceImpl implements AccountService{
 
     final private JwtUtils jwtUtils;
     final private AccountRepository accountRepository;
+    final private AccountNicknameRepository accountNicknameRepository;
+    final private AccountDetailRepository accountDetailRepository;
     final private RedisService redisService;
     final private EncoderConfig encoderConfig;
     @Override
     public boolean register(AccountRegisterRequestFrom requestFrom) {
+        log.info("register start");
+
         AccountRegisterRequest request = requestFrom.toAccountRegisterRequest();
         String encodedPassword = encoderConfig.passwordEncoder().encode(request.getPassword());
+
+        AccountDetail accountDetail = new AccountDetail();
+        accountDetail.setAddress(request.getAddress());
+        accountDetail.setPhoneNumber(request.getPhoneNumber());
+        accountDetailRepository.save(accountDetail);
+        log.info("accountDetail :" + accountDetail);
+
+
+        AccountNickname accountNickname = new AccountNickname();
+        accountNickname.setNickname(request.getNickname());
+        accountNicknameRepository.save(accountNickname);
+        log.info("accountNickname :" + accountNickname);
+
         Account account = new Account().builder()
                 .email(request.getEmail())
                 .password(encodedPassword)
                 .build();
+        account.setAccountDetail(accountDetail);
+        account.setAccountNickname(accountNickname);
         accountRepository.save(account);
+        log.info("account :" + account);
+
+        log.info("register end");
+
         return true;
     }
 
