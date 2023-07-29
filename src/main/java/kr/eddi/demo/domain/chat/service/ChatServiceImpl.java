@@ -125,8 +125,15 @@ public class ChatServiceImpl implements ChatService{
             }
 
         }
-        public String getFirstThreeSegments(String ip) {
-        String[] segments = ip.split(":");
-        return String.join(":", Arrays.copyOfRange(segments, 0, 3));
+    public String getFirstThreeSegments(String ip) {
+        if (ip.contains(".")) {
+            // IPv4
+            String[] parts = ip.split("\\.");
+            return String.join(".", Arrays.copyOfRange(parts, 0, 3));
+        } else {
+            // IPv6
+            String[] segments = ip.split(":");
+            return String.join(":", Arrays.copyOfRange(segments, 0, 3));
         }
+    }
 }
