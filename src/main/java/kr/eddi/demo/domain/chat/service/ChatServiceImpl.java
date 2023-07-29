@@ -1,6 +1,5 @@
 package kr.eddi.demo.domain.chat.service;
 
-import com.google.gson.Gson;
 import jakarta.websocket.Session;
 import kr.eddi.demo.domain.account.entity.Account;
 import kr.eddi.demo.domain.account.repository.AccountRepository;
