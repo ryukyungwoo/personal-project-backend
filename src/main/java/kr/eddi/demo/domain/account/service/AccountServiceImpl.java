@@ -4,8 +4,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.eddi.demo.config.EncoderConfig;
-import kr.eddi.demo.domain.account.controller.form.AccountLoginRequestForm;
-import kr.eddi.demo.domain.account.controller.form.AccountRegisterRequestFrom;
+import kr.eddi.demo.domain.account.controller.form.*;
 import kr.eddi.demo.domain.account.entity.Account;
 import kr.eddi.demo.domain.account.entity.AccountDetail;
 import kr.eddi.demo.domain.account.entity.AccountNickname;
@@ -156,5 +155,44 @@ public class AccountServiceImpl implements AccountService{
     @Override
     public Optional<Account> findUserByAccountId(Long accountId) {
         return accountRepository.findById(accountId);
+    }
+
+    @Override
+    public boolean checkEmailDuplicate(CheckEmailDuplicateRequestForm requestForm) {
+        Optional<Account> maybeAccount = accountRepository.findByEmail(requestForm.getEmail());
+        if (maybeAccount.isEmpty()) {
+            log.info("not duplicated email.");
+
+            return true;
+        }
+        log.info("duplicated email.");
+
+        return false;
+    }
+
+    @Override
+    public boolean checkNicknameDuplicate(CheckNicknameDuplicateRequestForm requestForm) {
+        Optional<AccountNickname> maybeNickName = accountNicknameRepository.findByNickname(requestForm.getNickname());
+        if (maybeNickName.isEmpty()){
+            log.info("not duplicated nickname.");
+
+            return true;
+        }
+        log.info("duplicated nickname.");
+
+        return false;
+    }
+
+    @Override
+    public boolean checkPhoneNumberDuplicate(CheckPhoneNumberDuplicateRequestForm requestForm) {
+        Optional<AccountDetail> maybeDetail = accountDetailRepository.findByPhoneNumber(requestForm.getPhoneNumber());
+        if (maybeDetail.isEmpty()) {
+            log.info("not duplicated phoneNum.");
+
+            return true;
+        }
+        log.info("duplicated phoneNum.");
+
+        return false;
     }
 }
