@@ -27,7 +27,8 @@ public class Board {
     @ManyToOne(fetch = FetchType.LAZY)
     private Account account;
 
-    private String writer;
+    private String anonymousWriter;
+    private String nickname;
 
     private String content;
     private String password;

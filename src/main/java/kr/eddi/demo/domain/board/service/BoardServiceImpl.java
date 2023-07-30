@@ -35,18 +35,36 @@ public class BoardServiceImpl implements BoardService{
         if (maybeBoardList.isEmpty()) {
             return null;
         }
+
         List<Board> boardList = maybeBoardList.get();
         List<BoardRequestResponseForm> requestResponseFormList = new ArrayList<>();
+
         for (Board board : boardList) {
-            BoardRequestResponseForm responseForm = BoardRequestResponseForm.builder()
-                                                                            .id(board.getId())
-                                                                            .title(board.getTitle())
-                                                                            .writer(board.getWriter())
-                                                                            .content(board.getContent())
-                                                                            .createDate(board.getCreateDate())
-                                                                            .updateDate(board.getUpdateDate())
-                                                                            .build();
-            requestResponseFormList.add(responseForm);
+
+            if (board.getNickname() != null){
+
+                BoardRequestResponseForm responseForm = BoardRequestResponseForm.builder()
+                        .id(board.getId())
+                        .title(board.getTitle())
+                        .writer(board.getAnonymousWriter())
+                        .content(board.getContent())
+                        .createDate(board.getCreateDate())
+                        .updateDate(board.getUpdateDate())
+                        .build();
+                requestResponseFormList.add(responseForm);
+
+            }else {
+
+                BoardRequestResponseForm responseForm = BoardRequestResponseForm.builder()
+                        .id(board.getId())
+                        .title(board.getTitle())
+                        .writer(board.getNickname())
+                        .content(board.getContent())
+                        .createDate(board.getCreateDate())
+                        .updateDate(board.getUpdateDate())
+                        .build();
+                requestResponseFormList.add(responseForm);
+            }
         }
 
         return requestResponseFormList;
@@ -65,10 +83,10 @@ public class BoardServiceImpl implements BoardService{
 
         Stock stock = maybeStock.get();
 
-        if (!requestForm.getPassword().trim().isEmpty()) {
+        if (requestForm.getPassword() == null || !requestForm.getPassword().trim().isEmpty()) {
             Board board = Board.builder()
                     .title(requestForm.getTitle())
-                    .writer(requestForm.getWriter())
+                    .anonymousWriter(requestForm.getWriter())
                     .content(requestForm.getContent())
                     .password(requestForm.getPassword())
                     .stock(stock)
@@ -78,16 +96,18 @@ public class BoardServiceImpl implements BoardService{
             responseForm.setId(board.getId());
             responseForm.setTicker(stock.getTicker());
             return responseForm;
+
         } else {
-            log.info("nickname: " + requestForm.getWriter());
+
             Optional<Account> maybeAccount = accountRepository.findByNicknameWithLazy(requestForm.getNickname());
             if (maybeAccount.isEmpty()) {
                 return null;
             }
             Account account = maybeAccount.get();
+
             Board board = Board.builder()
                     .title(requestForm.getTitle())
-                    .writer(requestForm.getNickname())
+                    .nickname(requestForm.getNickname())
                     .account(account)
                     .content(requestForm.getContent())
                     .password(requestForm.getPassword())
@@ -95,8 +115,6 @@ public class BoardServiceImpl implements BoardService{
                     .build();
 
             boardRepository.save(board);
-            log.info("writer: " + board.getWriter());
-            log.info("account: " + board.getAccount().getEmail());
             responseForm.setId(board.getId());
             responseForm.setTicker(stock.getTicker());
             return responseForm;
@@ -105,21 +123,37 @@ public class BoardServiceImpl implements BoardService{
 
     @Override
     public BoardRequestResponseForm request(String ticker, Long id) {
+
         Optional<Board> maybeBoard = boardRepository.findById(id);
 
         if (maybeBoard.isEmpty()){
             return null;
         }
         Board board = maybeBoard.get();
-        BoardRequestResponseForm responseForm = BoardRequestResponseForm.builder()
-                                                                    .id(board.getId())
-                                                                    .title(board.getTitle())
-                                                                    .writer(board.getWriter())
-                                                                    .content(board.getContent())
-                                                                    .createDate(board.getCreateDate())
-                                                                    .updateDate(board.getUpdateDate())
-                                                                    .build();
-        return responseForm;
+
+        if (board.getNickname() == null) {
+            BoardRequestResponseForm responseForm = BoardRequestResponseForm.builder()
+                    .id(board.getId())
+                    .title(board.getTitle())
+                    .writer(board.getAnonymousWriter())
+                    .content(board.getContent())
+                    .createDate(board.getCreateDate())
+                    .updateDate(board.getUpdateDate())
+                    .build();
+            return responseForm;
+
+        }else {
+
+            BoardRequestResponseForm responseForm = BoardRequestResponseForm.builder()
+                    .id(board.getId())
+                    .title(board.getTitle())
+                    .writer(board.getNickname())
+                    .content(board.getContent())
+                    .createDate(board.getCreateDate())
+                    .updateDate(board.getUpdateDate())
+                    .build();
+            return responseForm;
+        }
     }
 
     @Override
@@ -129,9 +163,9 @@ public class BoardServiceImpl implements BoardService{
         if (maybeBoard.isEmpty()){
             return null;
         }
+
         Board board = maybeBoard.get();
         board.setTitle(requestForm.getTitle());
-        board.setWriter(requestForm.getWriter());
         board.setContent(requestForm.getContent());
 
         boardRepository.save(board);
@@ -139,7 +173,6 @@ public class BoardServiceImpl implements BoardService{
         BoardRequestResponseForm responseForm = BoardRequestResponseForm.builder()
                                                                     .id(board.getId())
                                                                     .title(board.getTitle())
-                                                                    .writer(board.getWriter())
                                                                     .content(board.getContent())
                                                                     .createDate(board.getCreateDate())
                                                                     .updateDate(board.getUpdateDate())
