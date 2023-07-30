@@ -4,6 +4,7 @@ import kr.eddi.demo.domain.board.controller.form.request.BoardRegisterRequestFor
 import kr.eddi.demo.domain.board.controller.form.request.CommentRegisterRequestForm;
 import kr.eddi.demo.domain.board.controller.form.response.BoardRequestResponseForm;
 import kr.eddi.demo.domain.board.controller.form.response.BoardRegisterResponseForm;
+import kr.eddi.demo.domain.board.controller.form.response.CommentResponseForm;
 import kr.eddi.demo.domain.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,5 +52,9 @@ public class BoardController {
     @PostMapping("/comment/register")
     public void registerComment (@RequestBody CommentRegisterRequestForm requestForm) {
         boardService.commentRegister(requestForm);
+    }
+    @GetMapping("/comment/{id}")
+    public List<CommentResponseForm> responseComments (@PathVariable("id") Long id) {
+        return boardService.commentsListResponse(id);
     }
 }

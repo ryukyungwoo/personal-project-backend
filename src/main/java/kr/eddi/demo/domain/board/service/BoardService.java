@@ -4,6 +4,7 @@ import kr.eddi.demo.domain.board.controller.form.request.BoardRegisterRequestFor
 import kr.eddi.demo.domain.board.controller.form.request.CommentRegisterRequestForm;
 import kr.eddi.demo.domain.board.controller.form.response.BoardRegisterResponseForm;
 import kr.eddi.demo.domain.board.controller.form.response.BoardRequestResponseForm;
+import kr.eddi.demo.domain.board.controller.form.response.CommentResponseForm;
 
 import java.util.List;
 
@@ -19,4 +20,6 @@ public interface BoardService {
     void delete(String ticker, Long id);
 
     void commentRegister(CommentRegisterRequestForm requestForm);
+
+    List<CommentResponseForm> commentsListResponse(Long id);
 }

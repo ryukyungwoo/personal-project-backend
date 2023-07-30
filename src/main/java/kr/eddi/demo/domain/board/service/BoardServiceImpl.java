@@ -6,6 +6,7 @@ import kr.eddi.demo.domain.board.controller.form.request.BoardRegisterRequestFor
 import kr.eddi.demo.domain.board.controller.form.request.CommentRegisterRequestForm;
 import kr.eddi.demo.domain.board.controller.form.response.BoardRegisterResponseForm;
 import kr.eddi.demo.domain.board.controller.form.response.BoardRequestResponseForm;
+import kr.eddi.demo.domain.board.controller.form.response.CommentResponseForm;
 import kr.eddi.demo.domain.board.entity.Board;
 import kr.eddi.demo.domain.board.entity.Comment;
 import kr.eddi.demo.domain.board.repository.BoardRepository;
@@ -17,6 +18,7 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -53,7 +55,6 @@ public class BoardServiceImpl implements BoardService{
                         .writer(board.getAnonymousWriter())
                         .content(board.getContent())
                         .createDate(board.getCreateDate())
-                        .updateDate(board.getUpdateDate())
                         .build();
                 requestResponseFormList.add(responseForm);
 
@@ -65,7 +66,6 @@ public class BoardServiceImpl implements BoardService{
                         .writer(board.getNickname())
                         .content(board.getContent())
                         .createDate(board.getCreateDate())
-                        .updateDate(board.getUpdateDate())
                         .build();
                 requestResponseFormList.add(responseForm);
             }
@@ -172,6 +172,7 @@ public class BoardServiceImpl implements BoardService{
         Board board = maybeBoard.get();
         board.setTitle(requestForm.getTitle());
         board.setContent(requestForm.getContent());
+        board.setUpdateDate(LocalDateTime.now());
 
         boardRepository.save(board);
 
@@ -237,5 +238,41 @@ public class BoardServiceImpl implements BoardService{
             commentRepository.save(comment);
         }
 
+    }
+
+    @Override
+    public List<CommentResponseForm> commentsListResponse(Long id) {
+
+        List<CommentResponseForm> responseForms = new ArrayList<>();
+
+        List<Comment> comments = commentRepository.findByBoardId(id);
+
+        if (comments == null) {
+            return null;
+        }
+
+        for (Comment comment : comments) {
+            if (comment.getPassword() == null) {
+
+                CommentResponseForm responseForm = CommentResponseForm.builder()
+                        .writer(comment.getAccount().getAccountNickname().getNickname())
+                        .content(comment.getContent())
+                        .createDate(comment.getCreateDate())
+                        .build();
+                responseForms.add(responseForm);
+
+            } else {
+
+                CommentResponseForm responseForm = CommentResponseForm.builder()
+                        .writer(comment.getAnonymousWriter())
+                        .content(comment.getContent())
+                        .createDate(comment.getCreateDate())
+                        .build();
+                responseForms.add(responseForm);
+
+            }
+        }
+
+        return responseForms;
     }
 }
