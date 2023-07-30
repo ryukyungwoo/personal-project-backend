@@ -3,6 +3,7 @@ package kr.eddi.demo.domain.board.service;
 import kr.eddi.demo.domain.account.entity.Account;
 import kr.eddi.demo.domain.account.repository.AccountRepository;
 import kr.eddi.demo.domain.board.controller.form.request.BoardRegisterRequestForm;
+import kr.eddi.demo.domain.board.controller.form.request.CommentDeleteRequestForm;
 import kr.eddi.demo.domain.board.controller.form.request.CommentRegisterRequestForm;
 import kr.eddi.demo.domain.board.controller.form.response.BoardRegisterResponseForm;
 import kr.eddi.demo.domain.board.controller.form.response.BoardRequestResponseForm;
@@ -255,24 +256,54 @@ public class BoardServiceImpl implements BoardService{
             if (comment.getPassword() == null) {
 
                 CommentResponseForm responseForm = CommentResponseForm.builder()
+                        .id(comment.getId())
                         .writer(comment.getAccount().getAccountNickname().getNickname())
                         .content(comment.getContent())
                         .createDate(comment.getCreateDate())
                         .build();
                 responseForms.add(responseForm);
-
             } else {
-
                 CommentResponseForm responseForm = CommentResponseForm.builder()
+                        .id(comment.getId())
                         .writer(comment.getAnonymousWriter())
+                        .password(comment.getPassword())
                         .content(comment.getContent())
                         .createDate(comment.getCreateDate())
                         .build();
                 responseForms.add(responseForm);
-
             }
         }
 
         return responseForms;
+    }
+
+    @Override
+    public Boolean commentDelete(CommentDeleteRequestForm requestForm) {
+
+        if (requestForm.getDeletePassword() != null && !requestForm.getDeletePassword().trim().isEmpty()) {
+            Optional<Comment> maybeComment = commentRepository.findById(requestForm.getSelectedCommentId());
+            if (maybeComment.isEmpty()) {
+                return false;
+            }
+
+            Comment comment = maybeComment.get();
+            if (comment.getPassword() != null && comment.getPassword().equals(requestForm.getDeletePassword())) {
+                commentRepository.delete(comment);
+                return true;
+
+            }
+        } else {
+            Optional<Comment> maybeComment = commentRepository.findByIdWithLazy(requestForm.getSelectedCommentId());
+            if (maybeComment.isEmpty()) {
+                return false;
+            }
+            Comment comment = maybeComment.get();
+            if (comment.getAccount().getAccountNickname().getNickname().equals(requestForm.getNickname())) {
+                commentRepository.delete(comment);
+                return true;
+            }
+
+        }
+        return false;
     }
 }

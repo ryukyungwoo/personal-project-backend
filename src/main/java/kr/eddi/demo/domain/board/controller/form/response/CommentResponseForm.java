@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class CommentResponseForm {
 
+    private Long id;
+
     private String writer;
 
     private String content;
