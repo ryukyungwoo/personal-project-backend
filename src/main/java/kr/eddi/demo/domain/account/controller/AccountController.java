@@ -6,10 +6,7 @@ import kr.eddi.demo.domain.account.controller.form.*;
 import kr.eddi.demo.domain.account.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 
@@ -45,5 +42,9 @@ public class AccountController {
     @PostMapping("/check-duplicate-phoneNumber")
     public boolean checkPhoneNumber (@RequestBody CheckPhoneNumberDuplicateRequestForm requestForm) {
         return accountService.checkPhoneNumberDuplicate(requestForm);
+    }
+    @PostMapping("/request-nickname/{value}")
+    public AccountNicknameResponseForm  accountNicknameResponseForm (@PathVariable("value") String accessToken) {
+        return accountService.responseAccountNickname(accessToken);
     }
 }

@@ -195,4 +195,16 @@ public class AccountServiceImpl implements AccountService{
 
         return false;
     }
+
+    @Override
+    public AccountNicknameResponseForm responseAccountNickname(String accessToken) {
+        Optional<Account> maybeAccount = accountRepository.findByEmailWithLazy(jwtUtils.getEmail(accessToken));
+        if (maybeAccount.isEmpty()) {
+            return null;
+        }
+        Account account = maybeAccount.get();
+        AccountNicknameResponseForm accountNicknameResponseForm = new AccountNicknameResponseForm();
+        accountNicknameResponseForm.setNickname(account.getAccountNickname().getNickname());
+        return accountNicknameResponseForm;
+    }
 }

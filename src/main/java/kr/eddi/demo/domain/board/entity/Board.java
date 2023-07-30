@@ -3,6 +3,7 @@ package kr.eddi.demo.domain.board.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import kr.eddi.demo.domain.account.entity.Account;
 import kr.eddi.demo.domain.stock.entity.Stock;
 import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -23,9 +24,13 @@ public class Board {
 
     private String title;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Account account;
+
     private String writer;
 
     private String content;
+    private String password;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
     @UpdateTimestamp
@@ -35,6 +40,7 @@ public class Board {
     @UpdateTimestamp
     private LocalDateTime updateDate;
 
+    @JoinColumn(name = "ticker")
     @ManyToOne(fetch = FetchType.LAZY)
     private Stock stock;
 }

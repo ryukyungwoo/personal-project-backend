@@ -11,4 +11,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     @Query("SELECT a FROM Account a JOIN FETCH a.accountDetail JOIN FETCH a.accountNickname WHERE a.email = :email")
     Optional<Account> findByEmailWithLazy(String email);
+
+    @Query("SELECT a FROM Account a JOIN FETCH a.accountDetail JOIN FETCH a.accountNickname WHERE a.accountNickname.nickname = :nickname")
+    Optional<Account> findByNicknameWithLazy(String nickname);
 }

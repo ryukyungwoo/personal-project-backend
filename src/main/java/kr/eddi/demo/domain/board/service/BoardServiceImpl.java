@@ -1,5 +1,7 @@
 package kr.eddi.demo.domain.board.service;
 
+import kr.eddi.demo.domain.account.entity.Account;
+import kr.eddi.demo.domain.account.repository.AccountRepository;
 import kr.eddi.demo.domain.board.controller.form.request.BoardRegisterRequestForm;
 import kr.eddi.demo.domain.board.controller.form.response.BoardRegisterResponseForm;
 import kr.eddi.demo.domain.board.controller.form.response.BoardRequestResponseForm;
@@ -24,6 +26,7 @@ public class BoardServiceImpl implements BoardService{
 
     final private BoardRepository boardRepository;
     final private StockRepository stockRepository;
+    final private AccountRepository accountRepository;
 
     @Override
     public List<BoardRequestResponseForm> list(String ticker) {
@@ -51,6 +54,8 @@ public class BoardServiceImpl implements BoardService{
 
     @Override
     public BoardRegisterResponseForm register(BoardRegisterRequestForm requestForm, String ticker) {
+        BoardRegisterResponseForm responseForm = new BoardRegisterResponseForm();
+
         Optional<Stock> maybeStock = stockRepository.findByTicker(ticker);
 
         if (maybeStock.isEmpty()) {
@@ -60,16 +65,42 @@ public class BoardServiceImpl implements BoardService{
 
         Stock stock = maybeStock.get();
 
-        Board board = Board.builder()
-                            .title(requestForm.getTitle())
-                            .writer(requestForm.getWriter())
-                            .content(requestForm.getContent())
-                            .stock(stock)
-                            .build();
+        if (!requestForm.getPassword().trim().isEmpty()) {
+            Board board = Board.builder()
+                    .title(requestForm.getTitle())
+                    .writer(requestForm.getWriter())
+                    .content(requestForm.getContent())
+                    .password(requestForm.getPassword())
+                    .stock(stock)
+                    .build();
 
-        boardRepository.save(board);
+            boardRepository.save(board);
+            responseForm.setId(board.getId());
+            responseForm.setTicker(stock.getTicker());
+            return responseForm;
+        } else {
+            log.info("nickname: " + requestForm.getWriter());
+            Optional<Account> maybeAccount = accountRepository.findByNicknameWithLazy(requestForm.getNickname());
+            if (maybeAccount.isEmpty()) {
+                return null;
+            }
+            Account account = maybeAccount.get();
+            Board board = Board.builder()
+                    .title(requestForm.getTitle())
+                    .writer(requestForm.getNickname())
+                    .account(account)
+                    .content(requestForm.getContent())
+                    .password(requestForm.getPassword())
+                    .stock(stock)
+                    .build();
 
-        return null;
+            boardRepository.save(board);
+            log.info("writer: " + board.getWriter());
+            log.info("account: " + board.getAccount().getEmail());
+            responseForm.setId(board.getId());
+            responseForm.setTicker(stock.getTicker());
+            return responseForm;
+        }
     }
 
     @Override
