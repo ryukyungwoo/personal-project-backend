@@ -1,6 +1,7 @@
 package kr.eddi.demo.domain.board.service;
 
 import kr.eddi.demo.domain.board.controller.form.request.BoardRegisterRequestForm;
+import kr.eddi.demo.domain.board.controller.form.request.CommentRegisterRequestForm;
 import kr.eddi.demo.domain.board.controller.form.response.BoardRegisterResponseForm;
 import kr.eddi.demo.domain.board.controller.form.response.BoardRequestResponseForm;
 
@@ -17,4 +18,5 @@ public interface BoardService {
     BoardRequestResponseForm modify(BoardRegisterRequestForm requestForm, String ticker, Long id);
     void delete(String ticker, Long id);
 
+    void commentRegister(CommentRegisterRequestForm requestForm);
 }

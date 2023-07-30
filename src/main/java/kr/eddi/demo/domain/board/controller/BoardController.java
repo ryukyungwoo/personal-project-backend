@@ -1,6 +1,7 @@
 package kr.eddi.demo.domain.board.controller;
 
 import kr.eddi.demo.domain.board.controller.form.request.BoardRegisterRequestForm;
+import kr.eddi.demo.domain.board.controller.form.request.CommentRegisterRequestForm;
 import kr.eddi.demo.domain.board.controller.form.response.BoardRequestResponseForm;
 import kr.eddi.demo.domain.board.controller.form.response.BoardRegisterResponseForm;
 import kr.eddi.demo.domain.board.service.BoardService;
@@ -46,5 +47,9 @@ public class BoardController {
     public void deleteBoard (@PathVariable("ticker") String ticker,
                              @PathVariable("id") Long id) {
         boardService.delete(ticker, id);
+    }
+    @PostMapping("/comment/register")
+    public void registerComment (@RequestBody CommentRegisterRequestForm requestForm) {
+        boardService.commentRegister(requestForm);
     }
 }
