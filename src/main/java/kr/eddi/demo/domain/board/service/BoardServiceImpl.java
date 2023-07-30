@@ -136,6 +136,7 @@ public class BoardServiceImpl implements BoardService{
                     .id(board.getId())
                     .title(board.getTitle())
                     .writer(board.getAnonymousWriter())
+                    .password(board.getPassword())
                     .content(board.getContent())
                     .createDate(board.getCreateDate())
                     .updateDate(board.getUpdateDate())

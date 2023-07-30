@@ -18,6 +18,7 @@ public class BoardRequestResponseForm {
     private String title;
     private String writer;
     private String content;
+    private String password;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
     @UpdateTimestamp
     private LocalDateTime createDate;
