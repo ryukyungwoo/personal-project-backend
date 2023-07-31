@@ -207,4 +207,17 @@ public class AccountServiceImpl implements AccountService{
         accountNicknameResponseForm.setNickname(account.getAccountNickname().getNickname());
         return accountNicknameResponseForm;
     }
+
+    @Override
+    public MyPageResponseForm getMyPage(String value) {
+        String getEmail = jwtUtils.getEmail(value);
+        Optional<Account> maybeAccount = accountRepository.findByEmail(getEmail);
+        if (maybeAccount.isEmpty()) {
+            return null;
+        }
+        Account account = maybeAccount.get();
+        MyPageResponseForm responseForm = new MyPageResponseForm();
+        responseForm.setId(account.getId());
+        return responseForm;
+    }
 }

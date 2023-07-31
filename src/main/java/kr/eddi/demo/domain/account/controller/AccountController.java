@@ -47,4 +47,8 @@ public class AccountController {
     public AccountNicknameResponseForm  accountNicknameResponseForm (@PathVariable("value") String accessToken) {
         return accountService.responseAccountNickname(accessToken);
     }
+    @PostMapping("/get-my-page/{value}")
+    public MyPageResponseForm myPageResponseForm (@PathVariable("value") String value){
+        return accountService.getMyPage(value);
+    }
 }
