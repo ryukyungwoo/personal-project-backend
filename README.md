@@ -48,6 +48,55 @@
 
 ## 기능 요약
 
+![image](https://github.com/ryukyungwoo/personal-project-backend/assets/128555353/3684b2cc-f5f8-4d26-946d-89f5e419934e)
+메인화면 입니다
+메인 화면에서는 주식의 메타데이터를 볼 수 있습니다
+우측에 있는 메인 채팅방에서 채팅을 할 수 있습니다
+우측 상단에는 로그인을 위한 버튼이 있습니다
+
+![image](https://github.com/ryukyungwoo/personal-project-backend/assets/128555353/dd4ab353-acbf-485e-86aa-2419cfb60a12)
+주식 메타데이터 리스트 입니다
+주식의 OVCA를 한번에 볼 수 있게 하였고
+각각의 속성에 따라 오름차순, 내림차순 등으로 정렬해서 볼 수 있습니다.
+
+![image](https://github.com/ryukyungwoo/personal-project-backend/assets/128555353/fb58891c-b3c9-42a5-b184-ea270a2033e3)
+주식 여론 리스트 입니다
+네이버 주식 게시판을 크롤링 해서 여론을 분석 한 후 수치적으로 볼 수 있게 했습니다
+각 속성에 따라 오름차순, 내림차순 등으로 정렬해서 볼 수 있습니다
+
+![image](https://github.com/ryukyungwoo/personal-project-backend/assets/128555353/e62e7cd9-0f7e-4a3b-899f-af74b50ed71d)
+각 주식의 메인 화면 입니다
+주식의 메인 화면에서 다양한 정보를 볼 수 있습니다.
+가운데에는 현재 들어와 있는 주식방의 이름이 있고
+그 아래로 현재 주식의 가격 데이터가 있습니다
+그 아래로 현재 주식의 관한 뉴스와 게시판이 있습니다
+우측 상단에는 주식 채팅방이 있습니다
+
+![image](https://github.com/ryukyungwoo/personal-project-backend/assets/128555353/a17e2945-cc14-4105-b3da-d7d8113ffa89)
+주식 가격데이터 차트 입니다
+피리어드로 가격 데이터의 범위를 설정 할 수 있고
+인터벌로 가격 데이터의 단위를 설정 할 수 있습니다.
+![image](https://github.com/ryukyungwoo/personal-project-backend/assets/128555353/045fca95-1883-4421-887f-61297868b20a)
+마우스를 호버링하면 차트의 OVCA를 보여줍니다
+
+![image](https://github.com/ryukyungwoo/personal-project-backend/assets/128555353/61180bf6-3e1a-46de-ada2-5cd064b8c63c)
+주식 관련 뉴스 리스트입니다.
+![image](https://github.com/ryukyungwoo/personal-project-backend/assets/128555353/7cfd5c18-ff80-4ed4-9dab-73a3a1867975)
+각 항목당 뉴스로 하이퍼링크 되어 있어
+원문을 볼 수 있습니다.
+
+![image](https://github.com/ryukyungwoo/personal-project-backend/assets/128555353/4dd09806-571c-4270-b42c-06d56438de44)
+주식 관련 게시판 입니다.
+일반적인 CRUD 게시판이고 덧글을 달 수 있게 하여 의견 교환을 할 수 있도록 하였습니다.
+![image](https://github.com/ryukyungwoo/personal-project-backend/assets/128555353/7562e242-0250-4aeb-b779-aef8dac4cb07)
+![image](https://github.com/ryukyungwoo/personal-project-backend/assets/128555353/f01eab16-22ee-4449-b69e-ceb9459c5251)
+로그인과 비로그인 상황에 나누어 로그인 시 닉네임과 비밀번호가 자동으로 매핑되도록 하였습니다
+
+![image](https://github.com/ryukyungwoo/personal-project-backend/assets/128555353/420c3c83-1ad8-4b4d-a93a-50ae2c7b96e6)
+주식 채팅방 입니다.
+주식마다 채팅룸이 나뉘어져 있어
+관련 주식에 관한 채팅을 할 수 있도록 하였습니다.
+
 
 ---
 
