@@ -56,8 +56,8 @@
 
 
 ## 기능 요약 (수정필)
+![기능 요약](https://github.com/ryukyungwoo/personal-project-backend/assets/128555353/2ddbc300-3c50-46ae-a69a-d4115486b910)
 
----
 
 ---
 
