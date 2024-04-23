@@ -55,7 +55,7 @@
 <br />
 
 
-## 기능 요약 (수정필)
+## 기능 요약 
 ![기능 요약](https://github.com/ryukyungwoo/personal-project-backend/assets/128555353/2ddbc300-3c50-46ae-a69a-d4115486b910)
 
 
@@ -109,7 +109,7 @@
 <br />
 <br />
 
-## 업무 관리 (수정필)
+## 업무 관리 
 
 <details>
 <summary>업무의 명확한 파악</summary>
@@ -159,7 +159,7 @@
 <br />
 <br />
 
-## 프로젝트 기능 설명 (수정필)
+## 프로젝트 기능 설명 
 
 
 <details>
